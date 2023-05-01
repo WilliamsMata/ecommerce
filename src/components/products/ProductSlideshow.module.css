@@ -3,5 +3,5 @@
   justify-content: center;
   background-size: contain;
   background-position: center;
-  height: 600px;
+  aspect-ratio: 1/1;
 }

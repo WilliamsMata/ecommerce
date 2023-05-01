@@ -72,6 +72,7 @@ const theme = createTheme({
           boxShadow: "none",
           borderRadius: 10,
           ":hover": {
+            color: "black",
             backgroundColor: "rgba(0,0,0,0.05)",
             transition: "all 0.3s ease-in-out",
           },
