@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import {
   Grid,
   Card,
@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { IProduct } from "@/interfaces";
+import Link from "../Link";
 
 interface Props {
   product: IProduct;
@@ -15,12 +16,6 @@ interface Props {
 
 export const ProductCard: FC<Props> = ({ product }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
-  const productImage = useMemo(() => {
-    return isHovered
-      ? `products/${product.images[1]}`
-      : `products/${product.images[0]}`;
-  }, [isHovered, product.images]);
 
   return (
     <Grid
@@ -31,14 +26,24 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Card>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            image={productImage}
-            alt={product.title}
-            className="fadeIn"
-          />
-        </CardActionArea>
+        <Link href="/products/slug" prefetch={false}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              image={`products/${product.images[0]}`}
+              alt={product.title}
+              className="fadeIn"
+              sx={{ display: isHovered ? "none" : "block" }}
+            />
+            <CardMedia
+              component="img"
+              image={`products/${product.images[1]}`}
+              alt={product.title}
+              className="fadeIn"
+              sx={{ display: isHovered ? "block" : "none" }}
+            />
+          </CardActionArea>
+        </Link>
       </Card>
 
       <Box sx={{ mt: 1 }} className="fadeIn">
