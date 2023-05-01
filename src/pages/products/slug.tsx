@@ -11,26 +11,26 @@ const slug: NextPage = () => {
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7} lg={8}>
           <ProductSlideshow images={product.images} />
         </Grid>
 
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={5} lg={4}>
           <Box display="flex" flexDirection="column">
             {/* Títulos */}
             <Typography variant="h1">{product.title}</Typography>
             <Typography variant="subtitle1">${product.price}</Typography>
 
             {/* Cantidad */}
-            <Box sx={{ my: 2 }}>
-              <Typography variant="subtitle2">Quantity</Typography>
-
-              <ItemCounter />
-
+            <Box sx={{ my: 2 }} display="flex" flexDirection="column" gap={2}>
+              <Typography variant="subtitle2">Size</Typography>
               <SizeSelector
                 selectedSize={product.sizes[0]}
                 sizes={product.sizes}
               />
+
+              <Typography variant="subtitle2">Quantity</Typography>
+              <ItemCounter />
             </Box>
 
             {/* Agregar al carrito */}

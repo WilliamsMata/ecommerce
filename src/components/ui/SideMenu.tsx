@@ -51,20 +51,6 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          <ListItemButton>
-            <ListItemIcon>
-              <AccountCircleOutlined />
-            </ListItemIcon>
-            <ListItemText primary={"Profile"} />
-          </ListItemButton>
-
-          <ListItemButton>
-            <ListItemIcon>
-              <ConfirmationNumberOutlined />
-            </ListItemIcon>
-            <ListItemText primary={"My orders"} />
-          </ListItemButton>
-
           <ListItemButton sx={{ display: { sm: "none" } }}>
             <ListItemIcon>
               <MaleOutlined />
@@ -84,6 +70,20 @@ export const SideMenu = () => {
               <EscalatorWarningOutlined />
             </ListItemIcon>
             <ListItemText primary={"Kids"} />
+          </ListItemButton>
+
+          <ListItemButton>
+            <ListItemIcon>
+              <AccountCircleOutlined />
+            </ListItemIcon>
+            <ListItemText primary={"Profile"} />
+          </ListItemButton>
+
+          <ListItemButton>
+            <ListItemIcon>
+              <ConfirmationNumberOutlined />
+            </ListItemIcon>
+            <ListItemText primary={"My orders"} />
           </ListItemButton>
 
           <ListItemButton>

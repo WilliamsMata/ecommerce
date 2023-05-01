@@ -9,7 +9,7 @@ interface Props {
 
 export const SizeSelector: FC<Props> = ({ selectedSize, sizes }) => {
   return (
-    <Box sx={{ mt: 1 }}>
+    <Box>
       {sizes.map((size) => (
         <Button
           color={selectedSize === size ? "primary" : "info"}
