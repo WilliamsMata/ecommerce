@@ -3,6 +3,7 @@ import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import { ShopLayout } from "@/components/layouts";
 import { initialData } from "@/database";
 import { ProductSlideshow } from "@/components/products";
+import { ItemCounter } from "@/components/ui";
 
 const product = initialData.products[0];
 
@@ -22,9 +23,9 @@ const slug: NextPage = () => {
 
             {/* Cantidad */}
             <Box sx={{ my: 2 }}>
-              <Typography variant="subtitle2">Cantidad</Typography>
+              <Typography variant="subtitle2">Quantity</Typography>
 
-              {/* ItemCounter */}
+              <ItemCounter />
             </Box>
 
             {/* Agregar al carrito */}
