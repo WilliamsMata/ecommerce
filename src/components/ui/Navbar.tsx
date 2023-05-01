@@ -14,7 +14,7 @@ import Link from "../Link";
 export const Navbar = () => {
   return (
     <AppBar>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
+      <Toolbar sx={{ justifyContent: "space-between" }} component="nav">
         <Link href="/" display="flex" alignItems="center">
           <Typography variant="h6">Teslo | </Typography>
           <Typography sx={{ ml: 0.5 }}>Shop</Typography>

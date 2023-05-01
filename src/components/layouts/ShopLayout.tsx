@@ -1,7 +1,7 @@
 import { FC, PropsWithChildren } from "react";
 import Head from "next/head";
 import { Container } from "@mui/material";
-import { Navbar } from "../ui";
+import { Navbar, SideMenu } from "../ui";
 
 interface Props extends PropsWithChildren {
   title: string;
@@ -28,11 +28,9 @@ export const ShopLayout: FC<Props> = ({
         {imageFullUrl && <meta name="og:image" content={imageFullUrl} />}
       </Head>
 
-      <nav>
-        <Navbar />
-      </nav>
+      <Navbar />
 
-      {/* Todo: Sidebar */}
+      <SideMenu />
 
       <Container
         component="main"
