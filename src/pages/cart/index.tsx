@@ -20,7 +20,7 @@ const CartPage: NextPage = () => {
     >
       <Typography variant="h1">Cart</Typography>
 
-      <Grid container>
+      <Grid container sx={{ mt: 2 }}>
         <Grid item xs={12} md={7}>
           <CartList editable />
         </Grid>
@@ -37,7 +37,12 @@ const CartPage: NextPage = () => {
               <OrderSummary />
 
               <Box sx={{ mt: 2 }}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+                <Button
+                  color="secondary"
+                  className="circular-btn"
+                  fullWidth
+                  sx={{ py: 1 }}
+                >
                   Checkout
                 </Button>
               </Box>
