@@ -9,7 +9,7 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { CartList } from "@/components/cart";
+import { CartList, OrderSummary } from "@/components/cart";
 
 const CartPage: NextPage = () => {
   return (
@@ -22,17 +22,19 @@ const CartPage: NextPage = () => {
 
       <Grid container>
         <Grid item xs={12} md={7}>
-          <CartList />
+          <CartList editable />
         </Grid>
 
         <Grid item xs={12} md={5}>
           <Card className="summary-card">
             <CardContent>
-              <Typography variant="h2">Order</Typography>
+              <Typography variant="h2">
+                <b>Order Summary</b>
+              </Typography>
 
               <Divider sx={{ my: 1 }} />
 
-              {/* Order Summary */}
+              <OrderSummary />
 
               <Box sx={{ mt: 2 }}>
                 <Button color="secondary" className="circular-btn" fullWidth>

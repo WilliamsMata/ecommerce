@@ -1,15 +1,10 @@
-import {
-  Box,
-  Button,
-  CardActionArea,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { initialData } from "@/database";
+import { FC } from "react";
+import Image from "next/image";
+import { Box, Button, Grid, Typography } from "@mui/material";
+
 import Link from "../Link";
 import { ItemCounter } from "../ui";
-import Image from "next/image";
+import { initialData } from "@/database";
 
 const productsInCart = [
   initialData.products[0],
@@ -17,7 +12,11 @@ const productsInCart = [
   initialData.products[2],
 ];
 
-export const CartList = () => {
+interface Props {
+  editable?: boolean;
+}
+
+export const CartList: FC<Props> = ({ editable = false }) => {
   return (
     <>
       {productsInCart.map((product) => (
@@ -43,8 +42,11 @@ export const CartList = () => {
               </Typography>
             </Box>
 
-            {/* Condicional */}
-            <ItemCounter />
+            {editable ? (
+              <ItemCounter />
+            ) : (
+              <Typography variant="h6">3 items</Typography>
+            )}
           </Grid>
 
           <Grid
@@ -56,10 +58,11 @@ export const CartList = () => {
           >
             <Typography variant="subtitle1">${product.price}</Typography>
 
-            {/* Editable */}
-            <Button variant="text" color="secondary">
-              Remove
-            </Button>
+            {editable && (
+              <Button variant="text" color="secondary">
+                Remove
+              </Button>
+            )}
           </Grid>
         </Grid>
       ))}
