@@ -1,12 +1,13 @@
 import { FC, PropsWithChildren } from "react";
 import Head from "next/head";
-import { Container } from "@mui/material";
+import { Breakpoint, Container } from "@mui/material";
 import { Navbar, SideMenu } from "../ui";
 
 interface Props extends PropsWithChildren {
   title: string;
   pageDescription: string;
   imageFullUrl?: string;
+  maxWidth?: Breakpoint;
 }
 
 export const ShopLayout: FC<Props> = ({
@@ -14,6 +15,7 @@ export const ShopLayout: FC<Props> = ({
   title,
   pageDescription,
   imageFullUrl,
+  maxWidth,
 }) => {
   return (
     <>
@@ -34,7 +36,7 @@ export const ShopLayout: FC<Props> = ({
 
       <Container
         component="main"
-        maxWidth="xl"
+        maxWidth={maxWidth ? maxWidth : "xl"}
         sx={{
           mt: 8,
           paddingInline: 2,
