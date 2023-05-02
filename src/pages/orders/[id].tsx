@@ -6,20 +6,39 @@ import {
   CardContent,
   Divider,
   Box,
-  Button,
+  Chip,
 } from "@mui/material";
-import Link from "@/components/Link";
-import { ShopLayout } from "@/components/layouts";
-import { CartList, OrderSummary } from "@/components/cart";
+import CreditCardOffOutlined from "@mui/icons-material/CreditCardOffOutlined";
+import CreditScoreOutlined from "@mui/icons-material/CreditScoreOutlined";
 
-const SummaryPage: NextPage = () => {
+import { CartList, OrderSummary } from "@/components/cart";
+import { ShopLayout } from "@/components/layouts";
+import Link from "@/components/Link";
+
+const OrderPage: NextPage = () => {
   return (
     <ShopLayout
-      title={"Order summary"}
+      title={"Order summary 1234124"}
       pageDescription={"Order summary"}
       maxWidth="lg"
     >
-      <Typography variant="h1">Order summary</Typography>
+      <Typography variant="h1">Order: ABC123</Typography>
+
+      {/* <Chip
+        sx={{ my: 2 }}
+        label="Pending payment"
+        variant="outlined"
+        color="error"
+        icon={<CreditCardOffOutlined />}
+      /> */}
+
+      <Chip
+        sx={{ my: 2 }}
+        label="Paid order"
+        variant="outlined"
+        color="success"
+        icon={<CreditScoreOutlined />}
+      />
 
       <Grid container sx={{ mt: 2 }}>
         <Grid item xs={12} md={7}>
@@ -60,14 +79,16 @@ const SummaryPage: NextPage = () => {
               <OrderSummary />
 
               <Box sx={{ mt: 2 }}>
-                <Button
-                  color="secondary"
-                  className="circular-btn"
-                  fullWidth
-                  sx={{ py: 1 }}
-                >
-                  Confirm order
-                </Button>
+                {/* Todo  */}
+                <h1>Pagar</h1>
+
+                <Chip
+                  sx={{ my: 2 }}
+                  label="Paid order"
+                  variant="outlined"
+                  color="success"
+                  icon={<CreditScoreOutlined />}
+                />
               </Box>
             </CardContent>
           </Card>
@@ -77,4 +98,4 @@ const SummaryPage: NextPage = () => {
   );
 };
 
-export default SummaryPage;
+export default OrderPage;

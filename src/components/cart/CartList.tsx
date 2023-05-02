@@ -23,7 +23,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
         <Grid container key={product.slug} spacing={2} sx={{ mb: 1 }}>
           <Grid item xs={4} sm={2.5}>
             {/* TODO: Llevar a la pagina del producto */}
-            <Link href={"products/slug"}>
+            <Link href={"/products/slug"}>
               <Image
                 src={`/products/${product.images[0]}`}
                 width={100}
