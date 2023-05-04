@@ -6,17 +6,17 @@ import { ProductList } from "@/components/products";
 import { FullScreenLoading } from "@/components/ui";
 import { useProducts } from "@/hooks";
 
-const HomePage: NextPage = () => {
-  const { products, isLoading } = useProducts("/products");
+const MenPage: NextPage = () => {
+  const { products, isLoading } = useProducts("/products?gender=men");
 
   return (
     <ShopLayout
-      title={"Teslo-Shop - Home"}
+      title={"Teslo-Shop - Men"}
       pageDescription={
-        "Discover the latest fashion trends at Teslo Shop. Shop our selection of clothing and accessories for men and women. Find everything you need to elevate your style, from everyday essentials to statement pieces."
+        "Welcome to Teslo Shop for Men. Discover our selection of men's clothing. Find the latest fashion trends for men, from t-shirts and pants to jackets and accessories. Shop now at Teslo Shop!"
       }
     >
-      <Typography variant="h1">Home</Typography>
+      <Typography variant="h1">Men</Typography>
       <Typography variant="h2" sx={{ mb: 1 }}>
         Products:
       </Typography>
@@ -26,4 +26,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default MenPage;

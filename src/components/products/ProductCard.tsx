@@ -31,7 +31,6 @@ export const ProductCard: FC<Props> = ({ product }) => {
         <Link href="/products/slug" prefetch={false}>
           <CardActionArea>
             <CardMedia
-              className="fadeIn"
               sx={{
                 height: "100%",
                 aspectRatio: "1/1",
@@ -44,17 +43,20 @@ export const ProductCard: FC<Props> = ({ product }) => {
                 fill
                 sizes="(max-width: 600px) 50vw,
                   33vw"
+                className="fadeIn"
                 style={{
                   objectFit: "cover",
                   display: isHovered ? "none" : "block",
                 }}
+                priority={true}
               />
               <Image
                 src={`/products/${product.images[1].url}`}
                 alt={product.title}
                 fill
                 sizes="(max-width: 600px) 50vw,
-                  33vw"
+                33vw"
+                className="fadeIn"
                 style={{
                   objectFit: "cover",
                   display: isHovered ? "block" : "none",
