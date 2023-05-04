@@ -7,11 +7,11 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { IProduct } from "@/interfaces";
 import Link from "../Link";
+import { GetProducts } from "@/interfaces";
 
 interface Props {
-  product: IProduct;
+  product: GetProducts;
 }
 
 export const ProductCard: FC<Props> = ({ product }) => {
@@ -30,14 +30,14 @@ export const ProductCard: FC<Props> = ({ product }) => {
           <CardActionArea>
             <CardMedia
               component="img"
-              image={`products/${product.images[0]}`}
+              image={`products/${product.images[0].url}`}
               alt={product.title}
               className="fadeIn"
               sx={{ display: isHovered ? "none" : "block" }}
             />
             <CardMedia
               component="img"
-              image={`products/${product.images[1]}`}
+              image={`products/${product.images[1].url}`}
               alt={product.title}
               className="fadeIn"
               sx={{ display: isHovered ? "block" : "none" }}

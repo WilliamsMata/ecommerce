@@ -2,20 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Gender } from "@prisma/client";
 import { prisma } from "@/server";
 import { SHOP_CONSTANT } from "@/database";
+import { GetProducts } from "@/interfaces";
 
 type Data =
   | {
       message: string;
     }
   | GetProducts[];
-
-interface GetProducts {
-  images: { url: string }[];
-  title: string;
-  inStock: number;
-  price: number;
-  slug: string;
-}
 
 export default function handler(
   req: NextApiRequest,
@@ -55,6 +48,10 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
       images: { select: { url: true } },
       inStock: true,
       slug: true,
+    },
+
+    orderBy: {
+      gender: "asc",
     },
   });
 
