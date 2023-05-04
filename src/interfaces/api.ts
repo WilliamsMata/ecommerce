@@ -1,5 +1,5 @@
 export interface GetProducts {
-  images: { url: string }[];
+  images: { url: string; order: number }[];
   title: string;
   inStock: number;
   price: number;

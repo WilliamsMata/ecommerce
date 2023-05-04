@@ -45,13 +45,13 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
     select: {
       title: true,
       price: true,
-      images: { select: { url: true } },
+      images: { select: { url: true, order: true }, orderBy: { order: "asc" } },
       inStock: true,
       slug: true,
     },
 
     orderBy: {
-      gender: "asc",
+      createdAt: "asc",
     },
   });
 

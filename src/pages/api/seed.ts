@@ -32,7 +32,10 @@ export default async function handler(
           price: product.price,
           type: product.type,
           images: {
-            create: product.images.map((image) => ({ url: image })),
+            create: product.images.map((image, i) => ({
+              url: image,
+              order: i,
+            })),
           },
           tags: {
             connectOrCreate: product.tags.map((tag) => ({
