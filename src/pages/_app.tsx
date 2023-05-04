@@ -10,6 +10,7 @@ import theme from "@/themes/theme";
 import { createEmotionCache } from "@/utils";
 
 import "@/styles/globals.css";
+import { UiProvider } from "@/context";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -32,11 +33,13 @@ export default function MyApp(props: MyAppProps) {
             fetch(resource, init).then((res) => res.json()),
         }}
       >
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <UiProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          </ThemeProvider>
+        </UiProvider>
       </SWRConfig>
     </CacheProvider>
   );
