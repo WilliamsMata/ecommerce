@@ -24,6 +24,8 @@ model Product {
   tags        Tag[]
   type        Type
   gender      Gender
+
+  @@index([title])
 }
 
 model Image {
