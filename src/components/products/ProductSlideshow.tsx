@@ -5,7 +5,7 @@ import styles from "./ProductSlideshow.module.css";
 import "react-slideshow-image/dist/styles.css";
 
 interface Props {
-  images: string[];
+  images: { url: string }[];
 }
 
 export const ProductSlideshow: FC<Props> = ({ images }) => {
@@ -18,10 +18,10 @@ export const ProductSlideshow: FC<Props> = ({ images }) => {
       transitionDuration={500}
     >
       {images.map((image) => {
-        const url = `/products/${image}`;
+        const url = `/products/${image.url}`;
 
         return (
-          <div className={styles["each-slide"]} key={image}>
+          <div className={styles["each-slide"]} key={image.url}>
             <div
               style={{
                 backgroundImage: `url(${url})`,

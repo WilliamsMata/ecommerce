@@ -28,7 +28,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Card>
-        <Link href="/products/slug" prefetch={false}>
+        <Link href={`/products/${product.slug}`} prefetch={false}>
           <CardActionArea>
             <CardMedia
               sx={{

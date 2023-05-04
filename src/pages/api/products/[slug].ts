@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Product } from "@prisma/client";
-import { prisma } from "@/server";
+import { GetProductBySlug } from "@/interfaces";
+import { getProductBySlug } from "@/server/products";
 
 type Data =
   | {
       message: string;
     }
-  | Product;
+  | GetProductBySlug;
 
 export default function handler(
   req: NextApiRequest,
@@ -14,31 +14,18 @@ export default function handler(
 ) {
   switch (req.method) {
     case "GET":
-      return getProductBySlug(req, res);
+      return getProduct(req, res);
 
     default:
       return res.status(400).json({ message: "Bad request" });
   }
 }
 
-async function getProductBySlug(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
+async function getProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
   const slug = typeof req.query.slug === "string" ? req.query.slug : undefined;
 
   try {
-    const product = await prisma.product.findUnique({
-      where: {
-        slug,
-      },
-
-      include: {
-        images: { select: { url: true } },
-        sizes: { select: { size: true } },
-        tags: { select: { name: true } },
-      },
-    });
+    const product = await getProductBySlug(slug || "");
 
     if (!product) {
       return res.status(404).json({

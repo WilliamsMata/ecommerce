@@ -5,9 +5,12 @@ import { ShopLayout } from "@/components/layouts";
 import { ProductList } from "@/components/products";
 import { FullScreenLoading } from "@/components/ui";
 import { useProducts } from "@/hooks";
+import { GetProducts } from "@/interfaces";
 
 const KidsPage: NextPage = () => {
-  const { products, isLoading } = useProducts("/products?gender=kid");
+  const { data, isLoading } = useProducts<GetProducts[]>(
+    "/products?gender=kid"
+  );
 
   return (
     <ShopLayout
@@ -21,7 +24,11 @@ const KidsPage: NextPage = () => {
         Products:
       </Typography>
 
-      {isLoading ? <FullScreenLoading /> : <ProductList products={products} />}
+      {isLoading ? (
+        <FullScreenLoading />
+      ) : (
+        <ProductList products={data ? data : []} />
+      )}
     </ShopLayout>
   );
 };
