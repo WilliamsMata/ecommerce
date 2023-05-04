@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import Image from "next/image";
 import {
   Grid,
   Card,
@@ -7,6 +8,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+
 import Link from "../Link";
 import { GetProducts } from "@/interfaces";
 
@@ -29,19 +31,36 @@ export const ProductCard: FC<Props> = ({ product }) => {
         <Link href="/products/slug" prefetch={false}>
           <CardActionArea>
             <CardMedia
-              component="img"
-              image={`products/${product.images[0].url}`}
-              alt={product.title}
               className="fadeIn"
-              sx={{ display: isHovered ? "none" : "block" }}
-            />
-            <CardMedia
-              component="img"
-              image={`products/${product.images[1].url}`}
-              alt={product.title}
-              className="fadeIn"
-              sx={{ display: isHovered ? "block" : "none" }}
-            />
+              sx={{
+                height: "100%",
+                aspectRatio: "1/1",
+                position: "relative",
+              }}
+            >
+              <Image
+                src={`/products/${product.images[0].url}`}
+                alt={product.title}
+                fill
+                sizes="(max-width: 600px) 50vw,
+                  33vw"
+                style={{
+                  objectFit: "cover",
+                  display: isHovered ? "none" : "block",
+                }}
+              />
+              <Image
+                src={`/products/${product.images[1].url}`}
+                alt={product.title}
+                fill
+                sizes="(max-width: 600px) 50vw,
+                  33vw"
+                style={{
+                  objectFit: "cover",
+                  display: isHovered ? "block" : "none",
+                }}
+              />
+            </CardMedia>
           </CardActionArea>
         </Link>
       </Card>
