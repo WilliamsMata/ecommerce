@@ -19,3 +19,7 @@ export interface GetProductBySlug {
   description: string;
   price: number;
 }
+
+export interface ProductSlug {
+  slug: string;
+}

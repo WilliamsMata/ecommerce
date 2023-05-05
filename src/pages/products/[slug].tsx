@@ -1,11 +1,11 @@
-import { NextPage, GetServerSideProps } from "next";
+import { NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ShopLayout } from "@/components/layouts";
 import { ItemCounter } from "@/components/ui";
 import { GetProductBySlug } from "@/interfaces";
-import { getProductBySlug } from "@/server/products";
+import { getAllProductSlug, getProductBySlug } from "@/server/products";
 
 interface Props {
   product: GetProductBySlug;
@@ -59,13 +59,22 @@ const ProductPage: NextPage<Props> = ({ product }) => {
   );
 };
 
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
+// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
+export const getStaticPaths: GetStaticPaths = async (ctx) => {
+  const productSlugs = await getAllProductSlug(); // your fetch function here
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  params,
-}) => {
-  const { slug } = params as { slug: string };
+  return {
+    paths: productSlugs.map(({ slug }) => ({
+      params: {
+        slug,
+      },
+    })),
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
+  const { slug = "" } = params as { slug: string };
 
   const product = await getProductBySlug(slug); // your fetch function here
 
@@ -82,6 +91,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     props: {
       product,
     },
+    revalidate: 86400, // 60 * 60 * 24,
   };
 };
 
