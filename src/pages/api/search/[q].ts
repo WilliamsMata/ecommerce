@@ -1,19 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server";
+import { GetProducts } from "@/interfaces";
 
 type Data =
   | {
       message: string;
     }
-  | GetProductSearch[];
-
-interface GetProductSearch {
-  images: { url: string }[];
-  title: string;
-  inStock: number;
-  price: number;
-  slug: string;
-}
+  | GetProducts[];
 
 export default function handler(
   req: NextApiRequest,
