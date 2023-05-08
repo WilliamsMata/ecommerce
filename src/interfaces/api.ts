@@ -18,6 +18,7 @@ export interface GetProductBySlug {
   title: string;
   description: string;
   price: number;
+  inStock: number;
 }
 
 export interface ProductSlug {

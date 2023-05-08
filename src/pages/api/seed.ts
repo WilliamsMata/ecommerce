@@ -31,6 +31,7 @@ export default async function handler(
           slug: product.slug,
           price: product.price,
           type: product.type,
+          inStock: product.inStock,
           images: {
             create: product.images.map((image, i) => ({
               url: image,

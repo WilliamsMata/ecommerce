@@ -7,6 +7,7 @@ import {
   CardMedia,
   Box,
   Typography,
+  Chip,
 } from "@mui/material";
 
 import Link from "../Link";
@@ -30,6 +31,14 @@ export const ProductCard: FC<Props> = ({ product }) => {
       <Card>
         <Link href={`/products/${product.slug}`} prefetch={false}>
           <CardActionArea>
+            {product.inStock === 0 && (
+              <Chip
+                color="primary"
+                label="Not available"
+                sx={{ position: "absolute", zIndex: 1, top: 10, left: 10 }}
+              />
+            )}
+
             <CardMedia
               sx={{
                 height: "100%",
