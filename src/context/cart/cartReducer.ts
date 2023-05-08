@@ -7,8 +7,8 @@ type CartActionType =
       payload: CartProduct[];
     }
   | {
-      type: "[Cart] - Add Product";
-      payload: CartProduct;
+      type: "[Cart] - Update Products in cart";
+      payload: CartProduct[];
     };
 
 export const cartReducer = (
@@ -19,6 +19,12 @@ export const cartReducer = (
     case "[Cart] - LoadCart from cookies | storage":
       return {
         ...state,
+      };
+
+    case "[Cart] - Update Products in cart":
+      return {
+        ...state,
+        cart: [...action.payload],
       };
 
     default:

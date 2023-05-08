@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NextPage, GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import { Size } from "@prisma/client";
 
+import { CartContext } from "@/context";
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ShopLayout } from "@/components/layouts";
 import { ItemCounter } from "@/components/ui";
@@ -14,6 +16,10 @@ interface Props {
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+  const router = useRouter();
+
+  const { addProductToCart } = useContext(CartContext);
+
   const [tempCartProduct, setTempCartProduct] = useState<CartProduct>({
     id: product.id,
     image: product.images[0].url,
@@ -30,6 +36,21 @@ const ProductPage: NextPage<Props> = ({ product }) => {
       ...tempCartProduct,
       size,
     });
+  };
+
+  const onUpdateQuantity = (newValue: number) => {
+    setTempCartProduct({
+      ...tempCartProduct,
+      quantity: newValue,
+    });
+  };
+
+  const onAddProduct = () => {
+    if (!tempCartProduct.size) return;
+
+    addProductToCart(tempCartProduct);
+
+    router.push("/cart");
   };
 
   return (
@@ -55,12 +76,21 @@ const ProductPage: NextPage<Props> = ({ product }) => {
               />
 
               <Typography variant="subtitle2">Quantity</Typography>
-              <ItemCounter />
+
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                updatedQuantity={onUpdateQuantity}
+                maxValue={product.inStock}
+              />
             </Box>
 
             {/* Agregar al carrito */}
             {product.inStock > 0 ? (
-              <Button color="secondary" className="circular-btn">
+              <Button
+                onClick={onAddProduct}
+                color="secondary"
+                className="circular-btn"
+              >
                 {tempCartProduct.size ? "Add to cart" : "Select a size"}
               </Button>
             ) : (
