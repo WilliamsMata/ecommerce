@@ -1,4 +1,4 @@
-import { Product, Size } from "@prisma/client";
+import { Gender, Product, Size } from "@prisma/client";
 
 export interface GetProducts {
   images: { url: string }[];
@@ -9,6 +9,7 @@ export interface GetProducts {
 }
 
 export interface GetProductBySlug {
+  id: string;
   images: {
     url: string;
   }[];
@@ -16,9 +17,11 @@ export interface GetProductBySlug {
     size: Size;
   }[];
   title: string;
+  slug: string;
   description: string;
   price: number;
   inStock: number;
+  gender: Gender;
 }
 
 export interface ProductSlug {

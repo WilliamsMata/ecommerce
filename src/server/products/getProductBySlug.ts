@@ -10,10 +10,13 @@ export const getProductBySlug = async (
     },
 
     select: {
+      id: true,
       title: true,
+      slug: true,
       description: true,
       price: true,
       inStock: true,
+      gender: true,
       images: { select: { url: true } },
       sizes: { select: { size: true } },
     },

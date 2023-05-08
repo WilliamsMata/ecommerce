@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
+import { Size } from "@prisma/client";
 
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ShopLayout } from "@/components/layouts";
 import { ItemCounter } from "@/components/ui";
-import { GetProductBySlug } from "@/interfaces";
+import { CartProduct, GetProductBySlug } from "@/interfaces";
 import { getAllProductSlug, getProductBySlug } from "@/server/products";
 
 interface Props {
@@ -12,8 +14,23 @@ interface Props {
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
-  // const { query } = useRouter();
-  // const { data, isLoading } = useProducts<GetProductBySlug>(`/products/${query.slug}`);
+  const [tempCartProduct, setTempCartProduct] = useState<CartProduct>({
+    id: product.id,
+    image: product.images[0].url,
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const onSizeChange = (size: Size) => {
+    setTempCartProduct({
+      ...tempCartProduct,
+      size,
+    });
+  };
 
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -32,8 +49,9 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             <Box sx={{ my: 2 }} display="flex" flexDirection="column" gap={2}>
               <Typography variant="subtitle2">Size</Typography>
               <SizeSelector
-                selectedSize={product.sizes[0].size}
                 sizes={product.sizes}
+                selectedSize={tempCartProduct.size}
+                onSelectedSize={onSizeChange}
               />
 
               <Typography variant="subtitle2">Quantity</Typography>
@@ -43,7 +61,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
             {/* Agregar al carrito */}
             {product.inStock > 0 ? (
               <Button color="secondary" className="circular-btn">
-                Add to cart
+                {tempCartProduct.size ? "Add to cart" : "Select a size"}
               </Button>
             ) : (
               <Chip label="Not available" color="error" variant="outlined" />
