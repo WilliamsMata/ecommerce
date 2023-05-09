@@ -21,11 +21,11 @@ const CartPage: NextPage = () => {
       <Typography variant="h1">Cart</Typography>
 
       <Grid container sx={{ mt: 2 }}>
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7} component="section">
           <CartList editable />
         </Grid>
 
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={5} component="section">
           <Card className="summary-card">
             <CardContent>
               <Typography variant="h2">

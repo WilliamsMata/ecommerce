@@ -9,6 +9,14 @@ type CartActionType =
   | {
       type: "[Cart] - Update Products in cart";
       payload: CartProduct[];
+    }
+  | {
+      type: "[Cart] - Change cart quantity";
+      payload: CartProduct;
+    }
+  | {
+      type: "[Cart] - Remove product in Cart";
+      payload: CartProduct;
     };
 
 export const cartReducer = (
@@ -26,6 +34,33 @@ export const cartReducer = (
       return {
         ...state,
         cart: [...action.payload],
+      };
+
+    case "[Cart] - Change cart quantity":
+      return {
+        ...state,
+        cart: state.cart.map((product) => {
+          if (
+            action.payload.id === product.id &&
+            action.payload.size === product.size
+          ) {
+            return action.payload;
+          }
+
+          return product;
+        }),
+      };
+
+    case "[Cart] - Remove product in Cart":
+      return {
+        ...state,
+        cart: state.cart.filter(
+          (product) =>
+            !(
+              action.payload.id === product.id &&
+              action.payload.size === product.size
+            )
+        ),
       };
 
     default:
