@@ -1,2 +1,2 @@
 export * from "./constant";
-export * from "./products";
+export * as seedDatabase from "./seed-data";

@@ -1,3 +1,13 @@
+import { Role } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
+interface SeedUser {
+  name: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
 interface SeedProduct {
   description: string;
   images: string[];
@@ -15,10 +25,25 @@ type ValidSizes = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 type ValidTypes = "shirts" | "pants" | "hoodies" | "hats";
 
 interface SeedData {
+  users: SeedUser[];
   products: SeedProduct[];
 }
 
 export const initialData: SeedData = {
+  users: [
+    {
+      name: "Williams Mata",
+      email: "williams@google.com",
+      password: bcrypt.hashSync("123456"),
+      role: "admin",
+    },
+    {
+      name: "Daniela Mata",
+      email: "daniela@google.com",
+      password: bcrypt.hashSync("123456"),
+      role: "client",
+    },
+  ],
   products: [
     {
       description:

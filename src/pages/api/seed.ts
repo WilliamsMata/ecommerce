@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { initialData } from "@/database";
+import { seedDatabase } from "@/database";
 import { prisma } from "@/server";
 
 type Data = {
@@ -17,12 +17,24 @@ export default async function handler(
   }
 
   try {
-    await prisma.productSize.deleteMany();
-    await prisma.tag.deleteMany();
-    await prisma.image.deleteMany();
-    await prisma.product.deleteMany();
+    await prisma.$transaction(async (db) => {
+      await db.user.deleteMany();
+      await db.productSize.deleteMany();
+      await db.tag.deleteMany();
+      await db.image.deleteMany();
+      await db.product.deleteMany();
 
-    for (const product of initialData.products) {
+      await db.user.createMany({
+        data: seedDatabase.initialData.users.map((user) => ({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          role: user.role,
+        })),
+      });
+    });
+
+    for (const product of seedDatabase.initialData.products) {
       await prisma.product.create({
         data: {
           title: product.title,
