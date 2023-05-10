@@ -1,14 +1,22 @@
 import { PropsWithChildren, useEffect, useReducer, useState } from "react";
 import Cookie from "js-cookie";
 import { CartContext, cartReducer } from "./";
-import { CartProduct } from "@/interfaces";
+import { CartProduct, OrderSummary } from "@/interfaces";
 
 export interface CartState {
   cart: CartProduct[];
+  orderSummary: OrderSummary;
 }
 
 const CART_INITIAL_STATE: CartState = {
   cart: [],
+
+  orderSummary: {
+    numberOfItems: 0,
+    subTotal: 0,
+    tax: 0,
+    total: 0,
+  },
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
@@ -40,6 +48,33 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (isMounted) Cookie.set("cart", JSON.stringify(state.cart));
   }, [state.cart, isMounted]);
+
+  // Handle orderSummary
+  useEffect(() => {
+    const numberOfItems = state.cart.reduce(
+      (prev, current) => current.quantity + prev,
+      0
+    );
+
+    const subTotal = state.cart.reduce(
+      (prev, current) => current.quantity * current.price + prev,
+      0
+    );
+
+    const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+
+    const orderSummary = {
+      numberOfItems,
+      subTotal,
+      tax: subTotal * taxRate,
+      total: subTotal * (taxRate + 1),
+    };
+
+    dispatch({
+      type: "[Summary] - Update order summary",
+      payload: orderSummary,
+    });
+  }, [state.cart]);
 
   const addProductToCart = (product: CartProduct) => {
     const productInCart = state.cart.some(
