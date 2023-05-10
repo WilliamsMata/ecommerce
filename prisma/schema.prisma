@@ -77,3 +77,20 @@ enum Gender {
   kid
   unisex
 }
+
+// *** USERS ***
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(client)
+}
+
+enum Role {
+  admin
+  client
+}
