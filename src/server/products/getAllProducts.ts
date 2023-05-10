@@ -1,8 +1,8 @@
 import { GetProducts } from "@/interfaces";
 import { prisma } from "../db";
 
-export const getAllProducts = async (): Promise<GetProducts[]> => {
-  const products = await prisma.product.findMany({
+export const getAllProducts = (): Promise<GetProducts[]> => {
+  return prisma.product.findMany({
     select: {
       title: true,
       price: true,
@@ -11,6 +11,4 @@ export const getAllProducts = async (): Promise<GetProducts[]> => {
       images: { select: { url: true } },
     },
   });
-
-  return products;
 };

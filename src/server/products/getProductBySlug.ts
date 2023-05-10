@@ -1,10 +1,10 @@
 import { GetProductBySlug } from "@/interfaces";
 import { prisma } from "../db";
 
-export const getProductBySlug = async (
+export const getProductBySlug = (
   slug: string
 ): Promise<GetProductBySlug | null> => {
-  const product = await prisma.product.findUnique({
+  return prisma.product.findUnique({
     where: {
       slug,
     },
@@ -21,6 +21,4 @@ export const getProductBySlug = async (
       sizes: { select: { size: true } },
     },
   });
-
-  return product;
 };
