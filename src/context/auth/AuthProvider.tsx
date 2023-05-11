@@ -1,4 +1,5 @@
-import { PropsWithChildren, useReducer } from "react";
+import { PropsWithChildren, useEffect, useReducer } from "react";
+import axios from "axios";
 import { AuthContext, authReducer } from "./";
 import { tesloApi } from "@/api";
 import { UserContext } from "@/interfaces";
@@ -16,6 +17,25 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  const checkToken = async () => {
+    if (!Cookies.get("token")) return;
+
+    try {
+      const { data } = await tesloApi.get("/user/validate-token");
+      const { token, user } = data;
+
+      Cookies.set("token", token);
+
+      dispatch({ type: "[Auth] - Login", payload: user });
+    } catch (error) {
+      Cookies.remove("token");
+    }
+  };
 
   const loginUser = async (
     email: string,
@@ -35,12 +55,51 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const registerUser = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<{
+    hasError: boolean;
+    message?: string;
+  }> => {
+    try {
+      const { data } = await tesloApi.post("/user/signup", {
+        name,
+        email,
+        password,
+      });
+      const { token, user } = data;
+
+      Cookies.set("token", token);
+
+      dispatch({ type: "[Auth] - Login", payload: user });
+
+      return {
+        hasError: false,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          hasError: true,
+          message: error.response?.data.message,
+        };
+      }
+
+      return {
+        hasError: true,
+        message: "Failed to create user, please try again",
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         ...state,
 
         loginUser,
+        registerUser,
       }}
     >
       {children}

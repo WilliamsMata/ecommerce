@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -11,7 +12,7 @@ import {
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import { useForm } from "react-hook-form";
 import Link from "@/components/Link";
-import { tesloApi } from "@/api";
+import { AuthContext } from "@/context";
 import { AuthLayout } from "@/components/layouts";
 import { validations } from "@/utils";
 
@@ -22,7 +23,12 @@ type FormData = {
 };
 
 const RegisterPage: NextPage = () => {
+  const router = useRouter();
+
+  const { registerUser } = useContext(AuthContext);
+
   const [showError, setShowError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const {
     register,
@@ -33,20 +39,17 @@ const RegisterPage: NextPage = () => {
   const onRegisterForm = async ({ name, email, password }: FormData) => {
     setShowError(false);
 
-    try {
-      const { data } = await tesloApi.post("/user/signup", {
-        name,
-        email,
-        password,
-      });
-      const { token, user } = data;
+    const { hasError, message } = await registerUser(name, email, password);
 
-      console.log({ token, user });
-    } catch (error) {
-      console.error("Credentials error");
+    if (hasError) {
+      setErrorMessage(message || "Failed to create user, please try again");
       setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
+
+      setTimeout(() => setShowError(false), 5000);
+      return;
     }
+
+    router.replace("/");
   };
 
   return (
@@ -57,7 +60,7 @@ const RegisterPage: NextPage = () => {
             <Typography variant="h1">Create account</Typography>
 
             <Chip
-              label="The login credentials are incorrect. Please try again"
+              label={errorMessage}
               color="error"
               icon={<ErrorOutline />}
               className="fadeIn"

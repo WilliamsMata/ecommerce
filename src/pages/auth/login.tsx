@@ -41,7 +41,7 @@ const LoginPage: NextPage = () => {
 
     if (!isValidLogin) {
       setShowError(true);
-      setTimeout(() => setShowError(false), 10000);
+      setTimeout(() => setShowError(false), 5000);
       return;
     }
 
