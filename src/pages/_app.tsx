@@ -6,7 +6,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 
-import { UiProvider, CartProvider } from "@/context";
+import { UiProvider, CartProvider, AuthProvider } from "@/context";
 import theme from "@/themes/theme";
 import { createEmotionCache } from "@/utils";
 
@@ -33,15 +33,17 @@ export default function MyApp(props: MyAppProps) {
             fetch(resource, init).then((res) => res.json()),
         }}
       >
-        <CartProvider>
-          <UiProvider>
-            <ThemeProvider theme={theme}>
-              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-              <CssBaseline />
-              <Component {...pageProps} />
-            </ThemeProvider>
-          </UiProvider>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <UiProvider>
+              <ThemeProvider theme={theme}>
+                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                <CssBaseline />
+                <Component {...pageProps} />
+              </ThemeProvider>
+            </UiProvider>
+          </CartProvider>
+        </AuthProvider>
       </SWRConfig>
     </CacheProvider>
   );

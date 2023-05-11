@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server";
-import { Role } from "@prisma/client";
 import { jwt } from "@/utils";
+import { UserContext } from "@/interfaces";
 
 type Data =
   | {
@@ -9,14 +9,8 @@ type Data =
     }
   | {
       token: string;
-      user: User;
+      user: UserContext;
     };
-
-type User = {
-  email: string;
-  name: string;
-  role: Role;
-};
 
 export default function handler(
   req: NextApiRequest,
