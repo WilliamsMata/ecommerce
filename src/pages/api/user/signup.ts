@@ -66,7 +66,7 @@ async function signUpUser(req: NextApiRequest, res: NextApiResponse<Data>) {
     });
 
     if (user)
-      return res.status(400).json({ message: "Email is already in use" });
+      return res.status(409).json({ message: "Email is already in use" });
 
     const newUser = await prisma.user.create({
       data: {

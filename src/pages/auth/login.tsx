@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { NextPage } from "next";
-import { Box, Button, Chip, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import { useForm } from "react-hook-form";
 import Link from "@/components/Link";
@@ -28,17 +35,19 @@ const LoginPage: NextPage = () => {
     try {
       const { data } = await tesloApi.post("/user/login", { email, password });
       const { token, user } = data;
+
+      console.log({ token, user });
     } catch (error) {
       console.error("Credentials error");
       setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+      setTimeout(() => setShowError(false), 10000);
     }
   };
 
   return (
     <AuthLayout title="Login">
-      <form onSubmit={handleSubmit(onLoginUser)} noValidate>
-        <Box sx={{ width: 350, py: 1 }}>
+      <Box sx={{ width: "100%", maxWidth: 350 }}>
+        <form onSubmit={handleSubmit(onLoginUser)} noValidate>
           <Box display="flex" flexDirection="column" gap={2}>
             <Typography variant="h1">Login</Typography>
             <Chip
@@ -84,7 +93,11 @@ const LoginPage: NextPage = () => {
               fullWidth
               disabled={isSubmitting}
             >
-              Login
+              {isSubmitting ? (
+                <CircularProgress thickness={2} size={26.3} />
+              ) : (
+                "Login"
+              )}
             </Button>
 
             <Box display="flex" justifyContent="end">
@@ -93,8 +106,8 @@ const LoginPage: NextPage = () => {
               </Link>
             </Box>
           </Box>
-        </Box>
-      </form>
+        </form>
+      </Box>
     </AuthLayout>
   );
 };
