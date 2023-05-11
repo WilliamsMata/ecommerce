@@ -1,9 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/server";
 import { Role } from "@prisma/client";
 import { jwt } from "@/utils";
-import { signToken } from "../../../utils/jwt";
 
 type Data =
   | {

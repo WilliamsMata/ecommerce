@@ -41,12 +41,12 @@ async function loginUser(req: NextApiRequest, res: NextApiResponse<Data>) {
     },
   });
 
-  if (!user) return res.status(400).json({ message: "Invalid credentials" });
+  if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
   const isCorrectPassword = bcrypt.compareSync(password, user.password);
 
   if (!isCorrectPassword)
-    return res.status(400).json({ message: "Invalid credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
 
   const { id, name, role } = user;
 
