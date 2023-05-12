@@ -49,7 +49,8 @@ const RegisterPage: NextPage = () => {
       return;
     }
 
-    router.replace("/");
+    const destination = router.query.p?.toString() || "/";
+    router.replace(destination);
   };
 
   return (
@@ -124,7 +125,14 @@ const RegisterPage: NextPage = () => {
             </Button>
 
             <Box display="flex" justifyContent="end">
-              <Link href="/auth/login" underline="always">
+              <Link
+                href={
+                  router.query.p
+                    ? `/auth/login?p=${router.query.p}`
+                    : "/auth/login"
+                }
+                underline="always"
+              >
                 Login
               </Link>
             </Box>

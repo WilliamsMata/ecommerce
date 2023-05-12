@@ -45,7 +45,8 @@ const LoginPage: NextPage = () => {
       return;
     }
 
-    router.replace("/");
+    const destination = router.query.p?.toString() || "/";
+    router.replace(destination);
   };
 
   return (
@@ -105,7 +106,14 @@ const LoginPage: NextPage = () => {
             </Button>
 
             <Box display="flex" justifyContent="end">
-              <Link href="/auth/register" underline="always">
+              <Link
+                href={
+                  router.query.p
+                    ? `/auth/register?p=${router.query.p}`
+                    : "/auth/register"
+                }
+                underline="always"
+              >
                 Create account
               </Link>
             </Box>
