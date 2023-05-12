@@ -27,7 +27,7 @@ const CartPage: NextPage = () => {
 
   return (
     <ShopLayout
-      title={"Cart - 3"}
+      title={`Cart - ${cart.length > 9 ? "+9" : cart.length}`}
       pageDescription={"Store shopping cart"}
       maxWidth="lg"
     >
@@ -55,10 +55,10 @@ const CartPage: NextPage = () => {
 
                   <Box sx={{ mt: 2 }}>
                     <Button
+                      onClick={() => router.push("/checkout/address")}
                       color="secondary"
                       className="circular-btn"
                       fullWidth
-                      sx={{ py: 1 }}
                     >
                       Checkout
                     </Button>

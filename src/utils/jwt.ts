@@ -21,6 +21,10 @@ export const isValidToken = (token: string): Promise<string> => {
     );
   }
 
+  if (token.length <= 10) {
+    return Promise.reject("Invalid JWT");
+  }
+
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretSeed, (err, payload) => {
       if (err) return reject("Invalid JWT");
