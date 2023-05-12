@@ -1,4 +1,6 @@
+import { useContext, useEffect } from "react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { ShopLayout } from "@/components/layouts";
 import {
   Box,
@@ -9,47 +11,64 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import { CartContext } from "@/context";
 import { CartList, OrderSummary } from "@/components/cart";
 
 const CartPage: NextPage = () => {
+  const router = useRouter();
+
+  const { isLoaded, cart } = useContext(CartContext);
+
+  useEffect(() => {
+    if (isLoaded && cart.length === 0) {
+      router.replace("/cart/empty");
+    }
+  }, [isLoaded, cart, router]);
+
   return (
     <ShopLayout
       title={"Cart - 3"}
       pageDescription={"Store shopping cart"}
       maxWidth="lg"
     >
-      <Typography variant="h1">Cart</Typography>
+      {!isLoaded || cart.length === 0 ? (
+        <></>
+      ) : (
+        <>
+          <Typography variant="h1">Cart</Typography>
 
-      <Grid container sx={{ mt: 2 }}>
-        <Grid item xs={12} md={7} component="section">
-          <CartList editable />
-        </Grid>
+          <Grid container sx={{ mt: 2 }}>
+            <Grid item xs={12} md={7} component="section">
+              <CartList editable />
+            </Grid>
 
-        <Grid item xs={12} md={5} component="section">
-          <Card className="summary-card">
-            <CardContent>
-              <Typography variant="h2">
-                <b>Order Summary</b>
-              </Typography>
+            <Grid item xs={12} md={5} component="section">
+              <Card className="summary-card">
+                <CardContent>
+                  <Typography variant="h2">
+                    <b>Order Summary</b>
+                  </Typography>
 
-              <Divider sx={{ my: 1 }} />
+                  <Divider sx={{ my: 1 }} />
 
-              <OrderSummary />
+                  <OrderSummary />
 
-              <Box sx={{ mt: 2 }}>
-                <Button
-                  color="secondary"
-                  className="circular-btn"
-                  fullWidth
-                  sx={{ py: 1 }}
-                >
-                  Checkout
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+                  <Box sx={{ mt: 2 }}>
+                    <Button
+                      color="secondary"
+                      className="circular-btn"
+                      fullWidth
+                      sx={{ py: 1 }}
+                    >
+                      Checkout
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </>
+      )}
     </ShopLayout>
   );
 };

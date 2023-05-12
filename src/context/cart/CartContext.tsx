@@ -2,6 +2,7 @@ import { createContext } from "react";
 import { CartProduct, OrderSummary } from "@/interfaces";
 
 interface ContextProps {
+  isLoaded: boolean;
   cart: CartProduct[];
   orderSummary: OrderSummary;
 
