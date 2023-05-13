@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useReducer, useState } from "react";
-import Cookie from "js-cookie";
+import Cookies from "js-cookie";
 import { CartContext, cartReducer } from "./";
 import { CartProduct, OrderSummary } from "@/interfaces";
 
@@ -7,6 +7,18 @@ export interface CartState {
   isLoaded: boolean;
   cart: CartProduct[];
   orderSummary: OrderSummary;
+  shippingAddress?: ShippingAddress;
+}
+
+export interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2?: string;
+  zip: string;
+  city: string;
+  country: string;
+  phone: string;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -18,6 +30,7 @@ const CART_INITIAL_STATE: CartState = {
     tax: 0,
     total: 0,
   },
+  shippingAddress: undefined,
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
@@ -27,8 +40,8 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   // Load cartProducts from cookies on mount
   useEffect(() => {
     try {
-      const cookieProducts = Cookie.get("cart")
-        ? JSON.parse(Cookie.get("cart")!)
+      const cookieProducts = Cookies.get("cart")
+        ? JSON.parse(Cookies.get("cart")!)
         : [];
 
       dispatch({
@@ -47,7 +60,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
 
   // Set cartProducts on cookie
   useEffect(() => {
-    if (isMounted) Cookie.set("cart", JSON.stringify(state.cart));
+    if (isMounted) Cookies.set("cart", JSON.stringify(state.cart));
   }, [state.cart, isMounted]);
 
   // Handle orderSummary
@@ -76,6 +89,27 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       payload: orderSummary,
     });
   }, [state.cart]);
+
+  // Load Shipping Address from Cookies
+  useEffect(() => {
+    if (Cookies.get("firstName")) {
+      const shippingAddress = {
+        firstName: Cookies.get("firstName") || "",
+        lastName: Cookies.get("lastName") || "",
+        address: Cookies.get("address") || "",
+        address2: Cookies.get("address2") || "",
+        zip: Cookies.get("zip") || "",
+        city: Cookies.get("city") || "",
+        country: Cookies.get("country") || "",
+        phone: Cookies.get("phone") || "",
+      };
+
+      dispatch({
+        type: "[Cart] - Load Address from Cookies",
+        payload: shippingAddress,
+      });
+    }
+  }, []);
 
   const addProductToCart = (product: CartProduct) => {
     const productInCart = state.cart.some(
@@ -111,6 +145,18 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     dispatch({ type: "[Cart] - Remove product in Cart", payload: product });
   };
 
+  const updateAddress = (address: ShippingAddress) => {
+    Cookies.set("firstName", address.firstName);
+    Cookies.set("lastName", address.lastName);
+    Cookies.set("address", address.address);
+    Cookies.set("address2", address.address2 || "");
+    Cookies.set("zip", address.zip);
+    Cookies.set("city", address.city);
+    Cookies.set("country", address.country);
+    Cookies.set("phone", address.phone);
+    dispatch({ type: "[Cart] - Update Address", payload: address });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -119,6 +165,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
         addProductToCart,
         updateCartQuantity,
         removeCartProduct,
+        updateAddress,
       }}
     >
       {children}

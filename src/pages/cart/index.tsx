@@ -17,7 +17,8 @@ import { CartList, OrderSummary } from "@/components/cart";
 const CartPage: NextPage = () => {
   const router = useRouter();
 
-  const { isLoaded, cart } = useContext(CartContext);
+  const { isLoaded, cart, orderSummary } = useContext(CartContext);
+  const { numberOfItems } = orderSummary;
 
   useEffect(() => {
     if (isLoaded && cart.length === 0) {
@@ -27,7 +28,7 @@ const CartPage: NextPage = () => {
 
   return (
     <ShopLayout
-      title={`Cart - ${cart.length > 9 ? "+9" : cart.length}`}
+      title={`Cart - ${numberOfItems > 9 ? "+9" : numberOfItems}`}
       pageDescription={"Store shopping cart"}
       maxWidth="lg"
     >
