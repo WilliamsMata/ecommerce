@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 
-import { checkUserEmailPassword } from "@/server/users";
+import { checkUserEmailPassword, oAuthToDbUser } from "@/server/users";
 import { SessionUser } from "@/interfaces";
 
 interface MySession extends Session {
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
             break;
 
           case "oauth":
-            // todo: Crear usuario o verificar si existe en mi base de datos
+            token.user = await oAuthToDbUser(user.email || "", user.name || "");
             break;
         }
       }

@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useReducer } from "react";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { useSession, signOut } from "next-auth/react";
 import { User } from "@prisma/client";
 import axios from "axios";
@@ -21,7 +21,7 @@ const AUTH_INITIAL_STATE: AuthState = {
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
-  const router = useRouter();
+  // const router = useRouter();
 
   const { data, status } = useSession();
 
