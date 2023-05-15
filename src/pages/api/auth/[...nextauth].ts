@@ -46,6 +46,18 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
 
+  // Custom pages
+  pages: {
+    signIn: "/auth/login",
+    newUser: "/auth/register",
+  },
+
+  session: {
+    maxAge: 2592000, //30d
+    strategy: "jwt",
+    updateAge: 86400, // each day
+  },
+
   // Callbacks
   callbacks: {
     // This callback is executed when a JWT token is created for the user session. It is used to customize the content of the JWT token and add additional information.
