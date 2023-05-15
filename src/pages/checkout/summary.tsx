@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NextPage } from "next";
 import {
   Typography,
@@ -8,16 +8,24 @@ import {
   Divider,
   Box,
   Button,
-  Chip,
 } from "@mui/material";
+import Cookies from "js-cookie";
+
 import { CartContext } from "@/context";
 import Link from "@/components/Link";
 import { ShopLayout } from "@/components/layouts";
 import { CartList, OrderSummary } from "@/components/cart";
-import { countries } from "@/utils";
+import { useRouter } from "next/router";
 
 const SummaryPage: NextPage = () => {
+  const router = useRouter();
   const { shippingAddress, orderSummary } = useContext(CartContext);
+
+  useEffect(() => {
+    if (!Cookies.get("firstName")) {
+      router.push("/checkout/address");
+    }
+  }, [router]);
 
   if (!shippingAddress) {
     return <></>;
@@ -67,9 +75,7 @@ const SummaryPage: NextPage = () => {
               <Typography>
                 {city}, {zip}
               </Typography>
-              <Typography>
-                {countries.find((c) => c.code === country)?.name}
-              </Typography>
+              <Typography>{country}</Typography>
               <Typography>{phone}</Typography>
 
               <Divider sx={{ my: 1 }} />

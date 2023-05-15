@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -49,9 +49,23 @@ const AddressPage: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<FormData>({
-    defaultValues: getAddressFromCookies(),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      address: "",
+      address2: "",
+      zip: "",
+      city: "",
+      country: "",
+      phone: "",
+    },
   });
+
+  useEffect(() => {
+    reset(getAddressFromCookies());
+  }, [reset]);
 
   const onFormSubmit = async (data: FormData) => {
     updateAddress(data);
@@ -143,25 +157,17 @@ const AddressPage: NextPage = () => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <TextField
-                  select
-                  label="Country"
-                  variant="outlined"
-                  defaultValue={Cookies.get("country") || countries[0].code}
-                  {...register("country", {
-                    required: "This field is required",
-                  })}
-                  error={!!errors.country}
-                  helperText={errors.country?.message}
-                >
-                  {countries.map((country) => (
-                    <MenuItem key={country.code} value={country.code}>
-                      {country.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </FormControl>
+              <TextField
+                label="Country"
+                variant="outlined"
+                fullWidth
+                defaultValue={Cookies.get("country") || countries[0].code}
+                {...register("country", {
+                  required: "This field is required",
+                })}
+                error={!!errors.country}
+                helperText={errors.country?.message}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -192,34 +198,5 @@ const AddressPage: NextPage = () => {
     </ShopLayout>
   );
 };
-
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-
-// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-//   const { token = "" } = req.cookies;
-
-//   let isValidToken = false;
-
-//   try {
-//     await jwt.isValidToken(token);
-//     isValidToken = true;
-//   } catch (error) {
-//     isValidToken = false;
-//   }
-
-//   if (!isValidToken) {
-//     return {
-//       redirect: {
-//         destination: "/auth/login?p=/checkout/address",
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {},
-//   };
-// };
 
 export default AddressPage;

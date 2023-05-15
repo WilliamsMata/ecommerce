@@ -1,5 +1,4 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { initialData } from "@/database";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -10,7 +9,5 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  console.log(initialData.products.length);
-
   res.status(200).json({ name: "John Doe" });
 }
