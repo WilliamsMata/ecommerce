@@ -1,10 +1,13 @@
 import { PropsWithChildren, useEffect, useReducer } from "react";
 import { useRouter } from "next/router";
+import { useSession, signOut } from "next-auth/react";
+import { User } from "@prisma/client";
 import axios from "axios";
+import Cookies from "js-cookie";
+
 import { AuthContext, authReducer } from "./";
 import { tesloApi } from "@/api";
 import { UserContext } from "@/interfaces";
-import Cookies from "js-cookie";
 
 export interface AuthState {
   isLoggedIn: boolean;
@@ -20,9 +23,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const router = useRouter();
 
+  const { data, status } = useSession();
+
   useEffect(() => {
-    checkToken();
-  }, []);
+    if (status === "authenticated") {
+      console.log({ user: data?.user });
+
+      dispatch({ type: "[Auth] - Login", payload: data.user as User });
+    }
+  }, [status, data]);
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   const checkToken = async () => {
     if (!Cookies.get("token")) return;
@@ -96,7 +109,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const logoutUser = () => {
-    Cookies.remove("token");
     Cookies.remove("cart");
     Cookies.remove("firstName");
     Cookies.remove("lastName");
@@ -106,7 +118,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     Cookies.remove("city");
     Cookies.remove("country");
     Cookies.remove("phone");
-    router.reload();
+
+    signOut();
+    // Cookies.remove("token");
+    // router.reload();
   };
 
   return (
