@@ -1,10 +1,10 @@
-import { User } from "@prisma/client";
 import { AuthState } from "./";
+import { SessionUser } from "@/interfaces";
 
 type AuthActionType =
   | {
       type: "[Auth] - Login";
-      payload: User;
+      payload: SessionUser;
     }
   | {
       type: "[Auth] - Logout";

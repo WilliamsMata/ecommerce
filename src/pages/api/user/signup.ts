@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/server";
 import { jwt, validations } from "@/utils";
-import { UserContext } from "@/interfaces";
+import { SessionUser } from "@/interfaces";
 
 type Data =
   | {
@@ -10,7 +10,7 @@ type Data =
     }
   | {
       token: string;
-      user: UserContext;
+      user: SessionUser;
     };
 
 export default function handler(
@@ -77,6 +77,7 @@ async function signUpUser(req: NextApiRequest, res: NextApiResponse<Data>) {
     return res.status(200).json({
       token, //jwt
       user: {
+        id: newUser.id,
         email,
         name,
         role: "client",

@@ -7,11 +7,11 @@ import Cookies from "js-cookie";
 
 import { AuthContext, authReducer } from "./";
 import { tesloApi } from "@/api";
-import { UserContext } from "@/interfaces";
+import { SessionUser } from "@/interfaces";
 
 export interface AuthState {
   isLoggedIn: boolean;
-  user?: UserContext;
+  user?: SessionUser;
 }
 
 const AUTH_INITIAL_STATE: AuthState = {
@@ -84,9 +84,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         email,
         password,
       });
-      const { token, user } = data;
+      const { user } = data;
 
-      Cookies.set("token", token);
+      // Cookies.set("token", token);
 
       dispatch({ type: "[Auth] - Login", payload: user });
 

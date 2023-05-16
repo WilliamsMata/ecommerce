@@ -51,10 +51,10 @@ const RegisterPage: NextPage = () => {
       return;
     }
 
-    // const destination = router.query.p?.toString() || "/";
-    // router.replace(destination);
+    await signIn("credentials", { email, password, redirect: false });
 
-    await signIn("credentials", { email, password });
+    const destination = router.query.p?.toString() || "/";
+    router.replace(destination);
   };
 
   return (

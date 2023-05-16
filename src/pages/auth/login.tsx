@@ -60,18 +60,20 @@ const LoginPage: NextPage = () => {
   const onLoginUser = async ({ email, password }: FormData) => {
     setShowError(false);
 
-    // const isValidLogin = await loginUser(email, password);
+    const resp = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-    // if (!isValidLogin) {
-    //   setShowError(true);
-    //   setTimeout(() => setShowError(false), 5000);
-    //   return;
-    // }
+    if (!resp!.ok) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 10000);
+      return;
+    }
 
-    // const destination = router.query.p?.toString() || "/";
-    // router.replace(destination);
-
-    await signIn("credentials", { email, password });
+    const destination = router.query.p?.toString() || "/";
+    router.replace(destination);
   };
 
   return (
