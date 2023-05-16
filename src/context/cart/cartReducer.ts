@@ -1,5 +1,5 @@
 import { CartState } from "./";
-import { CartProduct, OrderSummary, ShippingAddress } from "@/interfaces";
+import { CartProduct, OrderSummary, IShippingAddress } from "@/interfaces";
 
 type CartActionType =
   | {
@@ -20,11 +20,11 @@ type CartActionType =
     }
   | {
       type: "[Cart] - Load Address from Cookies";
-      payload: ShippingAddress;
+      payload: IShippingAddress;
     }
   | {
       type: "[Cart] - Update Address";
-      payload: ShippingAddress;
+      payload: IShippingAddress;
     }
   | {
       type: "[Summary] - Update order summary";

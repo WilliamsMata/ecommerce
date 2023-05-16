@@ -1,13 +1,13 @@
-import { ISize } from "./";
+import { Gender, Size } from "@prisma/client";
 
 export interface CartProduct {
   id: string;
   image: string;
   price: number;
-  size?: ISize;
+  size?: Size;
   slug: string;
   title: string;
-  gender: "men" | "women" | "kid" | "unisex";
+  gender: Gender;
   quantity: number;
 }
 

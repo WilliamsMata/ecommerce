@@ -8,9 +8,9 @@ import Cookies from "js-cookie";
 import { CartContext } from "@/context";
 import { ShopLayout } from "@/components/layouts";
 import { countries } from "@/utils";
-import { ShippingAddress } from "@/interfaces";
+import { IShippingAddress } from "@/interfaces";
 
-interface FormData extends ShippingAddress {}
+interface FormData extends IShippingAddress {}
 
 const getAddressFromCookies = (): FormData => {
   return {

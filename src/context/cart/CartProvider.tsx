@@ -1,14 +1,26 @@
-import { PropsWithChildren, useEffect, useReducer, useState } from "react";
+import {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import Cookies from "js-cookie";
 import { CartContext, cartReducer } from "./";
-import { CartProduct, OrderSummary, ShippingAddress } from "@/interfaces";
+import {
+  CartProduct,
+  OrderSummary,
+  IShippingAddress,
+  IOrder,
+} from "@/interfaces";
 import { tesloApi } from "@/api";
+import { AuthContext } from "../auth";
 
 export interface CartState {
   isLoaded: boolean;
   cart: CartProduct[];
   orderSummary: OrderSummary;
-  shippingAddress?: ShippingAddress;
+  shippingAddress?: IShippingAddress;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -24,6 +36,8 @@ const CART_INITIAL_STATE: CartState = {
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
+  const { user } = useContext(AuthContext);
+
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
@@ -135,7 +149,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     dispatch({ type: "[Cart] - Remove product in Cart", payload: product });
   };
 
-  const updateAddress = (address: ShippingAddress) => {
+  const updateAddress = (address: IShippingAddress) => {
     Cookies.set("firstName", address.firstName);
     Cookies.set("lastName", address.lastName);
     Cookies.set("address", address.address);
@@ -148,8 +162,28 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   };
 
   const createOrder = async () => {
+    if (!state.shippingAddress)
+      throw new Error("There is not shipping address");
+
+    const body: IOrder = {
+      userId: user!.id,
+      shippingAddress: state.shippingAddress,
+      numberOfItems: state.orderSummary.numberOfItems,
+      subTotal: state.orderSummary.subTotal,
+      tax: state.orderSummary.tax,
+      total: state.orderSummary.total,
+      isPaid: false,
+      orderItems: state.cart.map((product) => ({
+        productId: product.id,
+        size: product.size!,
+        gender: product.gender,
+        quantity: product.quantity,
+        price: product.price,
+      })),
+    };
+
     try {
-      const { data } = await tesloApi.post("/orders");
+      const { data } = await tesloApi.post("/orders", body);
 
       console.log(data);
     } catch (error) {

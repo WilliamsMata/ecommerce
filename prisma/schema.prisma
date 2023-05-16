@@ -136,6 +136,7 @@ model OrderItem {
   orderId String
 
   size     Size
+  gender   Gender
   quantity Int
   price    Float
 
