@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import {
   Typography,
   Grid,
@@ -15,11 +16,11 @@ import { CartContext } from "@/context";
 import Link from "@/components/Link";
 import { ShopLayout } from "@/components/layouts";
 import { CartList, OrderSummary } from "@/components/cart";
-import { useRouter } from "next/router";
 
 const SummaryPage: NextPage = () => {
   const router = useRouter();
-  const { shippingAddress, orderSummary } = useContext(CartContext);
+  const { shippingAddress, orderSummary, createOrder } =
+    useContext(CartContext);
 
   useEffect(() => {
     if (!Cookies.get("firstName")) {
@@ -27,11 +28,13 @@ const SummaryPage: NextPage = () => {
     }
   }, [router]);
 
-  if (!shippingAddress) {
-    return <></>;
-  }
+  const onCreateOrder = () => {
+    createOrder();
+  };
 
-  const { address, address2, city, country, firstName, lastName, phone, zip } =
+  if (!shippingAddress) return <></>;
+
+  const { address, address2, state, country, firstName, lastName, phone, zip } =
     shippingAddress;
 
   return (
@@ -73,7 +76,7 @@ const SummaryPage: NextPage = () => {
               <Typography>{address}</Typography>
               <Typography>{address2}</Typography>
               <Typography>
-                {city}, {zip}
+                {state}, {zip}
               </Typography>
               <Typography>{country}</Typography>
               <Typography>{phone}</Typography>
@@ -90,6 +93,7 @@ const SummaryPage: NextPage = () => {
 
               <Box sx={{ mt: 2 }}>
                 <Button
+                  onClick={onCreateOrder}
                   color="secondary"
                   className="circular-btn"
                   fullWidth
