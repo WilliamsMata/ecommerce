@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     Cookies.remove("address");
     Cookies.remove("address2");
     Cookies.remove("zip");
-    Cookies.remove("city");
+    Cookies.remove("state");
     Cookies.remove("country");
     Cookies.remove("phone");
 

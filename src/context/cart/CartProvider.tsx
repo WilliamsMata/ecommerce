@@ -1,24 +1,13 @@
 import { PropsWithChildren, useEffect, useReducer, useState } from "react";
 import Cookies from "js-cookie";
 import { CartContext, cartReducer } from "./";
-import { CartProduct, OrderSummary } from "@/interfaces";
+import { CartProduct, OrderSummary, ShippingAddress } from "@/interfaces";
 
 export interface CartState {
   isLoaded: boolean;
   cart: CartProduct[];
   orderSummary: OrderSummary;
   shippingAddress?: ShippingAddress;
-}
-
-export interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  zip: string;
-  city: string;
-  country: string;
-  phone: string;
 }
 
 const CART_INITIAL_STATE: CartState = {
@@ -99,7 +88,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
         address: Cookies.get("address") || "",
         address2: Cookies.get("address2") || "",
         zip: Cookies.get("zip") || "",
-        city: Cookies.get("city") || "",
+        state: Cookies.get("state") || "",
         country: Cookies.get("country") || "",
         phone: Cookies.get("phone") || "",
       };
@@ -151,7 +140,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     Cookies.set("address", address.address);
     Cookies.set("address2", address.address2 || "");
     Cookies.set("zip", address.zip);
-    Cookies.set("city", address.city);
+    Cookies.set("state", address.state);
     Cookies.set("country", address.country);
     Cookies.set("phone", address.phone);
     dispatch({ type: "[Cart] - Update Address", payload: address });

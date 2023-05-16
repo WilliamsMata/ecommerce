@@ -1,31 +1,16 @@
 import { useContext, useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
+
 import { CartContext } from "@/context";
 import { ShopLayout } from "@/components/layouts";
 import { countries } from "@/utils";
+import { ShippingAddress } from "@/interfaces";
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  zip: string;
-  city: string;
-  country: string;
-  phone: string;
-};
+interface FormData extends ShippingAddress {}
 
 const getAddressFromCookies = (): FormData => {
   return {
@@ -34,7 +19,7 @@ const getAddressFromCookies = (): FormData => {
     address: Cookies.get("address") || "",
     address2: Cookies.get("address2") || "",
     zip: Cookies.get("zip") || "",
-    city: Cookies.get("city") || "",
+    state: Cookies.get("state") || "",
     country: Cookies.get("country") || "",
     phone: Cookies.get("phone") || "",
   };
@@ -57,7 +42,7 @@ const AddressPage: NextPage = () => {
       address: "",
       address2: "",
       zip: "",
-      city: "",
+      state: "",
       country: "",
       phone: "",
     },
@@ -145,14 +130,14 @@ const AddressPage: NextPage = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="City"
+                label="State"
                 variant="outlined"
                 fullWidth
-                {...register("city", {
+                {...register("state", {
                   required: "This field is required",
                 })}
-                error={!!errors.city}
-                helperText={errors.city?.message}
+                error={!!errors.state}
+                helperText={errors.state?.message}
               />
             </Grid>
 
