@@ -3,6 +3,9 @@ import type { NextRequest, NextFetchEvent } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
+  /* 
+    Check if there is SESSION for Redirect to previous page
+  */
   //? "/auth/*"
   if (req.nextUrl.pathname.startsWith("/auth")) {
     // Useful user information
@@ -19,8 +22,14 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     return NextResponse.next();
   }
 
-  //? "/checkout/*"
-  if (req.nextUrl.pathname.startsWith("/checkout")) {
+  /* 
+    Check if there is SESSION or Redirect to /auth/login
+  */
+  //? "/checkout/*" "/orders/*"
+  if (
+    req.nextUrl.pathname.startsWith("/checkout") ||
+    req.nextUrl.pathname.startsWith("/orders")
+  ) {
     // Useful user information
     const session = await getToken({
       req,
@@ -41,5 +50,5 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
 }
 
 export const config = {
-  matcher: ["/auth/:path*", "/checkout/:path*"],
+  matcher: ["/auth/:path*", "/checkout/:path*", "/orders/:path*"],
 };

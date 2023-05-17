@@ -45,6 +45,12 @@ const rows = [
   { id: 6, paid: true, fullname: "Daniel Alonzo" },
   { id: 7, paid: false, fullname: "Leonard Salazar" },
   { id: 8, paid: true, fullname: "Bryant Mata" },
+  { id: 9, paid: true, fullname: "Daniela Mata" },
+  { id: 10, paid: true, fullname: "Juan Morales" },
+  { id: 11, paid: false, fullname: "Julia Rojas" },
+  { id: 12, paid: true, fullname: "Daniel Alonzo" },
+  { id: 13, paid: false, fullname: "Leonard Salazar" },
+  { id: 14, paid: true, fullname: "Bryant Mata" },
 ];
 
 const HistoryPage: NextPage = () => {
@@ -55,9 +61,14 @@ const HistoryPage: NextPage = () => {
     >
       <Typography variant="h1">Orders history</Typography>
 
-      <Grid container>
-        <Grid item xs={12} sx={{ height: 650 }}>
-          <DataGrid rows={rows} columns={columns} pageSizeOptions={[10]} />
+      <Grid container sx={{ pt: 2 }}>
+        <Grid item xs={12}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            autoPageSize
+            sx={{ height: "calc(100vh - 250px)" }}
+          />
         </Grid>
       </Grid>
     </ShopLayout>
