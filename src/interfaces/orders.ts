@@ -1,7 +1,12 @@
-import { Gender, Size } from "@prisma/client";
+import {
+  Gender,
+  Order,
+  OrderItem,
+  ShippingAddress,
+  Size,
+} from "@prisma/client";
 
-export interface IOrder {
-  id?: string;
+export interface OrderBody {
   orderItems: IOrderItem[];
   shippingAddress: IShippingAddress;
   paymentResult?: string;
@@ -32,4 +37,9 @@ export interface IShippingAddress {
   state: string;
   country: string;
   phone: string;
+}
+
+export interface CompleteOrder extends Order {
+  orderItems: OrderItem[];
+  shippingAddress: ShippingAddress;
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -9,6 +9,7 @@ import {
   Divider,
   Box,
   Button,
+  Chip,
 } from "@mui/material";
 import Cookies from "js-cookie";
 
@@ -22,14 +23,27 @@ const SummaryPage: NextPage = () => {
   const { shippingAddress, orderSummary, createOrder } =
     useContext(CartContext);
 
+  const [isPosting, setIsPosting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   useEffect(() => {
     if (!Cookies.get("firstName")) {
       router.push("/checkout/address");
     }
   }, [router]);
 
-  const onCreateOrder = () => {
-    createOrder();
+  const onCreateOrder = async () => {
+    setIsPosting(true);
+
+    const { hasError, message } = await createOrder();
+
+    if (hasError) {
+      setIsPosting(false);
+      setErrorMessage(message);
+      return;
+    }
+
+    router.replace(`/orders/${message}`);
   };
 
   if (!shippingAddress) return <></>;
@@ -91,16 +105,22 @@ const SummaryPage: NextPage = () => {
 
               <OrderSummary />
 
-              <Box sx={{ mt: 2 }}>
+              <Box display="flex" flexDirection="column" gap={2} sx={{ mt: 2 }}>
                 <Button
                   onClick={onCreateOrder}
                   color="secondary"
                   className="circular-btn"
                   fullWidth
-                  sx={{ py: 1 }}
+                  disabled={isPosting}
                 >
                   Confirm order
                 </Button>
+
+                <Chip
+                  color="error"
+                  label={errorMessage}
+                  sx={{ display: errorMessage ? "flex" : "none" }}
+                />
               </Box>
             </CardContent>
           </Card>

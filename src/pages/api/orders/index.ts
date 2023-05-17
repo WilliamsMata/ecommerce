@@ -1,15 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { Order } from "@prisma/client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/server";
-import { IOrder } from "@/interfaces";
+import { CompleteOrder, OrderBody } from "@/interfaces";
 
 type Data =
   | {
       message: string;
     }
-  | Order;
+  | CompleteOrder;
 
 export default function handler(
   req: NextApiRequest,
@@ -25,7 +24,7 @@ export default function handler(
 }
 
 async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const body = req.body as IOrder;
+  const body = req.body as OrderBody;
   const { orderItems, total } = body;
 
   // Verify if there is an authenticated user

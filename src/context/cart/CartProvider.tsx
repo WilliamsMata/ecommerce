@@ -5,16 +5,18 @@ import {
   useReducer,
   useState,
 } from "react";
+import axios from "axios";
 import Cookies from "js-cookie";
+
 import { CartContext, cartReducer } from "./";
 import {
   CartProduct,
   OrderSummary,
   IShippingAddress,
-  IOrder,
+  OrderBody,
+  CompleteOrder,
 } from "@/interfaces";
 import { tesloApi } from "@/api";
-import { AuthContext } from "../auth";
 
 export interface CartState {
   isLoaded: boolean;
@@ -36,8 +38,6 @@ const CART_INITIAL_STATE: CartState = {
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const { user } = useContext(AuthContext);
-
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [state, dispatch] = useReducer(cartReducer, CART_INITIAL_STATE);
 
@@ -161,11 +161,14 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     dispatch({ type: "[Cart] - Update Address", payload: address });
   };
 
-  const createOrder = async () => {
+  const createOrder = async (): Promise<{
+    hasError: boolean;
+    message: string;
+  }> => {
     if (!state.shippingAddress)
       throw new Error("There is not shipping address");
 
-    const body: IOrder = {
+    const body: OrderBody = {
       shippingAddress: state.shippingAddress,
       numberOfItems: state.orderSummary.numberOfItems,
       subTotal: state.orderSummary.subTotal,
@@ -182,11 +185,26 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     };
 
     try {
-      const { data } = await tesloApi.post("/orders", body);
+      const { data } = await tesloApi.post<CompleteOrder>("/orders", body);
 
-      console.log(data);
+      dispatch({ type: "[Cart] - Order complete" });
+
+      return {
+        hasError: false,
+        message: data.id,
+      };
     } catch (error) {
-      console.log(error);
+      if (axios.isAxiosError(error)) {
+        return {
+          hasError: true,
+          message: error.response?.data.message,
+        };
+      }
+
+      return {
+        hasError: true,
+        message: "Unhandled error, talk to administrator",
+      };
     }
   };
 
