@@ -2,7 +2,6 @@ import { Gender, Size } from "@prisma/client";
 
 export interface IOrder {
   id?: string;
-  userId: string;
   orderItems: IOrderItem[];
   shippingAddress: IShippingAddress;
   paymentResult?: string;

@@ -166,7 +166,6 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       throw new Error("There is not shipping address");
 
     const body: IOrder = {
-      userId: user!.id,
       shippingAddress: state.shippingAddress,
       numberOfItems: state.orderSummary.numberOfItems,
       subTotal: state.orderSummary.subTotal,
