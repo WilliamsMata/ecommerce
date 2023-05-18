@@ -72,8 +72,7 @@ const LoginPage: NextPage = () => {
       return;
     }
 
-    const destination = router.query.p?.toString() || "/";
-    router.replace(destination);
+    router.reload();
   };
 
   return (

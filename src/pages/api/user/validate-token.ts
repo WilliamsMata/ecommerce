@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server";
 import { jwt } from "@/utils";
-import { UserContext } from "@/interfaces";
+import { SessionUser } from "@/interfaces";
 
 type Data =
   | {
@@ -9,7 +9,7 @@ type Data =
     }
   | {
       token: string;
-      user: UserContext;
+      user: SessionUser;
     };
 
 export default function handler(
@@ -50,6 +50,6 @@ async function checkJWT(req: NextApiRequest, res: NextApiResponse<Data>) {
 
   return res.status(200).json({
     token: jwt.signToken(id, email),
-    user: { email, name, role },
+    user: { id, email, name, role },
   });
 }
