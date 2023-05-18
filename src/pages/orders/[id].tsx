@@ -16,7 +16,7 @@ import { CartList, OrderSummary } from "@/components/cart";
 import { ShopLayout } from "@/components/layouts";
 import Link from "@/components/Link";
 import { getOrderById } from "@/server/orders";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { MySession, authOptions } from "../api/auth/[...nextauth]";
 import { CompleteOrder } from "@/interfaces";
 
 interface Props {
@@ -129,9 +129,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     };
   }
 
-  const session: any = await getServerSession(req, res, authOptions);
+  const session: MySession | null = await getServerSession(
+    req,
+    res,
+    authOptions
+  );
+  // middleware verify if there is a session
 
-  if (order.userId !== session.user.id) {
+  if (order.userId !== session!.user.id) {
     return {
       redirect: {
         destination: "/orders/history",

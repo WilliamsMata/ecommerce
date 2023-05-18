@@ -1,11 +1,11 @@
 import { CompleteOrder } from "@/interfaces";
 import { prisma } from "../db";
-import { isUUID } from "@/utils";
+import { validations } from "@/utils";
 
 export const getOrderById = async (
   id: string
 ): Promise<CompleteOrder | null> => {
-  if (!isUUID(id)) return null;
+  if (!validations.isUUID(id)) return null;
 
   const order = await prisma.order.findUnique({
     where: { id },

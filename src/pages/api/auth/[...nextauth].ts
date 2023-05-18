@@ -6,7 +6,7 @@ import Credentials from "next-auth/providers/credentials";
 import { checkUserEmailPassword, oAuthToDbUser } from "@/server/users";
 import { SessionUser } from "@/interfaces";
 
-interface MySession extends Session {
+export interface MySession extends Session {
   accessToken: string;
   user: SessionUser;
 }

@@ -156,5 +156,5 @@ model ShippingAddress {
   country   String
   phone     String
 
-  Order Order?
+  order Order?
 }
