@@ -1,13 +1,17 @@
-import { NextPage } from "next";
+import { NextPage, GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
 import { Chip, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { ShopLayout } from "@/components/layouts";
 import Link from "@/components/Link";
+import { MySession, authOptions } from "../api/auth/[...nextauth]";
+import { getOrdersByUserId } from "@/server/orders";
+import { OrderHistory } from "@/interfaces";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 100 },
-  { field: "fullname", headerName: "Full name", width: 300 },
+  { field: "fullName", headerName: "Full name", width: 300 },
   {
     field: "paid",
     headerName: "Paid",
@@ -28,7 +32,7 @@ const columns: GridColDef[] = [
     sortable: false,
     renderCell(params: GridRenderCellParams) {
       return (
-        <Link href={`/orders/${params.row.id}`} underline="always">
+        <Link href={`/orders/${params.row.order}`} underline="always">
           See order
         </Link>
       );
@@ -36,24 +40,18 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
-  { id: 1, paid: true, fullname: "Williams Mata" },
-  { id: 2, paid: false, fullname: "Leida Rojas" },
-  { id: 3, paid: true, fullname: "Daniela Mata" },
-  { id: 4, paid: true, fullname: "Juan Morales" },
-  { id: 5, paid: false, fullname: "Julia Rojas" },
-  { id: 6, paid: true, fullname: "Daniel Alonzo" },
-  { id: 7, paid: false, fullname: "Leonard Salazar" },
-  { id: 8, paid: true, fullname: "Bryant Mata" },
-  { id: 9, paid: true, fullname: "Daniela Mata" },
-  { id: 10, paid: true, fullname: "Juan Morales" },
-  { id: 11, paid: false, fullname: "Julia Rojas" },
-  { id: 12, paid: true, fullname: "Daniel Alonzo" },
-  { id: 13, paid: false, fullname: "Leonard Salazar" },
-  { id: 14, paid: true, fullname: "Bryant Mata" },
-];
+interface Props {
+  orders: OrderHistory[];
+}
 
-const HistoryPage: NextPage = () => {
+const HistoryPage: NextPage<Props> = ({ orders }) => {
+  const rows = orders.map((order, i) => ({
+    id: i + 1,
+    paid: order.paid,
+    fullName: order.fullName,
+    order: order.id,
+  }));
+
   return (
     <ShopLayout
       title={"Orders history"}
@@ -61,7 +59,7 @@ const HistoryPage: NextPage = () => {
     >
       <Typography variant="h1">Orders history</Typography>
 
-      <Grid container sx={{ pt: 2 }}>
+      <Grid container sx={{ pt: 2 }} className="fadeIn">
         <Grid item xs={12}>
           <DataGrid
             rows={rows}
@@ -73,6 +71,26 @@ const HistoryPage: NextPage = () => {
       </Grid>
     </ShopLayout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  req,
+  res,
+}) => {
+  const session: MySession | null = await getServerSession(
+    req,
+    res,
+    authOptions
+  );
+  // Session is always true (Checked in middleware)
+
+  const orders = await getOrdersByUserId(session!.user.id);
+
+  return {
+    props: {
+      orders,
+    },
+  };
 };
 
 export default HistoryPage;

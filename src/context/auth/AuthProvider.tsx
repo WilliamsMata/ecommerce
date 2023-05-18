@@ -27,8 +27,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      console.log({ user: data?.user });
-
       dispatch({ type: "[Auth] - Login", payload: data.user as User });
     }
   }, [status, data]);

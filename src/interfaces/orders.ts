@@ -46,3 +46,9 @@ export interface CompleteOrder extends Order {
   orderItems: OrderItem[];
   shippingAddress: ShippingAddress;
 }
+
+export interface OrderHistory {
+  id: string;
+  paid: boolean;
+  fullName: string;
+}
