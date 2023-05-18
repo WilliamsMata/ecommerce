@@ -66,6 +66,8 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
     // All Good
     const userId = session.user.id;
 
+    body.total = Math.round(body.total * 100) / 100;
+
     const newOrder = await prisma.order.create({
       data: {
         ...body,

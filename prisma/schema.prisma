@@ -122,6 +122,8 @@ model Order {
   isPaid Boolean   @default(false)
   paidAt DateTime?
 
+  transactionId String? @unique
+
   @@index([userId])
   @@index([shippingAddressId])
 }
