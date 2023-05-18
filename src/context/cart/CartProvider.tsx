@@ -177,6 +177,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       isPaid: false,
       orderItems: state.cart.map((product) => ({
         productId: product.id,
+        title: product.title,
+        slug: product.slug,
+        image: product.image,
         size: product.size!,
         gender: product.gender,
         quantity: product.quantity,

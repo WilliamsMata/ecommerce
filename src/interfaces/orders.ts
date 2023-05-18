@@ -22,6 +22,9 @@ export interface OrderBody {
 
 export interface IOrderItem {
   productId: string;
+  title: string;
+  slug: string;
+  image: string;
   size: Size;
   gender: Gender;
   quantity: number;

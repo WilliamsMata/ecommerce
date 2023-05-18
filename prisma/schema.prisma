@@ -135,6 +135,9 @@ model OrderItem {
   order   Order  @relation(fields: [orderId], references: [id])
   orderId String
 
+  title    String
+  slug     String
+  image    String
   size     Size
   gender   Gender
   quantity Int

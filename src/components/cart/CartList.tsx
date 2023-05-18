@@ -1,6 +1,7 @@
 import { FC, useContext } from "react";
 import Image from "next/image";
 import { Box, Button, Grid, Typography } from "@mui/material";
+import { OrderItem } from "@prisma/client";
 
 import Link from "../Link";
 import { ItemCounter } from "../ui";
@@ -9,9 +10,10 @@ import { CartProduct } from "@/interfaces";
 
 interface Props {
   editable?: boolean;
+  products?: OrderItem[];
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
   const { cart, updateCartQuantity, removeCartProduct } =
     useContext(CartContext);
 
@@ -23,9 +25,11 @@ export const CartList: FC<Props> = ({ editable = false }) => {
     updateCartQuantity(product);
   };
 
+  const productsToShow = products ? products : cart;
+
   return (
     <>
-      {cart.map((product) => (
+      {productsToShow.map((product) => (
         <Grid
           key={product.slug + product.size}
           container
