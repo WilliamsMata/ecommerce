@@ -6,6 +6,7 @@ import { SWRConfig } from "swr";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider, EmotionCache } from "@emotion/react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 import { UiProvider, CartProvider, AuthProvider } from "@/context";
 import theme from "@/themes/theme";
@@ -29,24 +30,30 @@ export default function MyApp(props: MyAppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <SessionProvider>
-        <SWRConfig
-          value={{
-            fetcher: (resource, init) =>
-              fetch(resource, init).then((res) => res.json()),
+        <PayPalScriptProvider
+          options={{
+            "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
           }}
         >
-          <AuthProvider>
-            <CartProvider>
-              <UiProvider>
-                <ThemeProvider theme={theme}>
-                  {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-                  <CssBaseline />
-                  <Component {...pageProps} />
-                </ThemeProvider>
-              </UiProvider>
-            </CartProvider>
-          </AuthProvider>
-        </SWRConfig>
+          <SWRConfig
+            value={{
+              fetcher: (resource, init) =>
+                fetch(resource, init).then((res) => res.json()),
+            }}
+          >
+            <AuthProvider>
+              <CartProvider>
+                <UiProvider>
+                  <ThemeProvider theme={theme}>
+                    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                    <CssBaseline />
+                    <Component {...pageProps} />
+                  </ThemeProvider>
+                </UiProvider>
+              </CartProvider>
+            </AuthProvider>
+          </SWRConfig>
+        </PayPalScriptProvider>
       </SessionProvider>
     </CacheProvider>
   );
