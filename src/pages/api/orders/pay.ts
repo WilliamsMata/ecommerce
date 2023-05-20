@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
 import axios from "axios";
+import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/server";
 import { PayPalOrderStatusResponse } from "@/interfaces";
+import { validations } from "@/utils";
 
 type Data = {
   message: string;
@@ -56,8 +59,22 @@ const getPaypalBearerToken = async (): Promise<string | null> => {
 };
 
 async function payOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
-  // Todo: validar sesión del usuario
-  // Todo: validad uuid
+  // Validar sesión del usuario
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return res
+      .status(401)
+      .json({ message: "You do not have an active session" });
+  }
+
+  const { transactionId = "", orderId = "" } = req.body;
+
+  const isValidOrderId = validations.isUUID(orderId);
+
+  if (!isValidOrderId) {
+    return res.status(400).json({ message: "Invalid orderId" });
+  }
 
   // Obtenemos el token de validación
   const paypalBearerToken = await getPaypalBearerToken();
@@ -65,8 +82,6 @@ async function payOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (!paypalBearerToken) {
     return res.status(400).json({ message: "Could not confirm paypal token" });
   }
-
-  const { transactionId = "", orderId = "" } = req.body;
 
   try {
     // hacer request para verificar si el transactionId esta pagado
