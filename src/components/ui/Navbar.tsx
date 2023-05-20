@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   Button,
+  Container,
   IconButton,
   Input,
   InputAdornment,
@@ -37,92 +38,98 @@ export const Navbar = () => {
 
   return (
     <AppBar>
-      <Toolbar sx={{ justifyContent: "space-between" }} component="nav">
-        <Link href="/" display="flex" alignItems="center">
-          <Typography variant="h6">Teslo | </Typography>
-          <Typography sx={{ ml: 0.5 }}>Shop</Typography>
-        </Link>
-
-        <Box
-          className="fadeIn"
-          sx={{
-            display: isSearchVisible ? "none" : { xs: "none", sm: "block" },
-          }}
+      <Container maxWidth="xl">
+        <Toolbar
+          sx={{ justifyContent: "space-between" }}
+          component="nav"
+          disableGutters
         >
-          <Link href="/category/men">
-            <Button color={route === "/category/men" ? "primary" : "info"}>
-              Hombres
-            </Button>
+          <Link href="/" display="flex" alignItems="center">
+            <Typography variant="h6">Teslo | </Typography>
+            <Typography sx={{ ml: 0.5 }}>Shop</Typography>
           </Link>
 
-          <Link href="/category/women">
-            <Button color={route === "/category/women" ? "primary" : "info"}>
-              Mujeres
-            </Button>
-          </Link>
+          <Box
+            sx={{
+              display: isSearchVisible ? "none" : { xs: "none", sm: "flex" },
+              ml: 5,
+              gap: 0.5,
+            }}
+          >
+            <Link href="/category/men">
+              <Button color={route === "/category/men" ? "primary" : "info"}>
+                Men
+              </Button>
+            </Link>
 
-          <Link href="/category/kids">
-            <Button color={route === "/category/kids" ? "primary" : "info"}>
-              Niños
-            </Button>
-          </Link>
-        </Box>
+            <Link href="/category/women">
+              <Button color={route === "/category/women" ? "primary" : "info"}>
+                Women
+              </Button>
+            </Link>
 
-        <Box>
-          {/* Pantallas grandes */}
+            <Link href="/category/kids">
+              <Button color={route === "/category/kids" ? "primary" : "info"}>
+                Kids
+              </Button>
+            </Link>
+          </Box>
 
-          {isSearchVisible ? (
-            <Input
-              autoFocus
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && onSearchTerm()}
-              type="text"
-              placeholder="Search..."
-              className="fadeIn"
-              sx={{ display: { xs: "none", sm: "inline-flex" } }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={() => setIsSearchVisible(false)}>
-                    <ClearOutlined />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          ) : (
+          <Box>
+            {/* Pantallas grandes */}
+
+            {isSearchVisible ? (
+              <Input
+                autoFocus
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && onSearchTerm()}
+                type="text"
+                placeholder="Search..."
+                className="fadeIn"
+                sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setIsSearchVisible(false)}>
+                      <ClearOutlined />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            ) : (
+              <IconButton
+                onClick={() => setIsSearchVisible(true)}
+                sx={{ display: { xs: "none", sm: "inline-flex" } }}
+                title="Search"
+              >
+                <SearchOutlined />
+              </IconButton>
+            )}
+
+            {/* Pantallas pequeñas */}
             <IconButton
-              onClick={() => setIsSearchVisible(true)}
-              className="fadeIn"
-              sx={{ display: { xs: "none", sm: "inline-flex" } }}
               title="Search"
+              onClick={toggleSideMenu}
+              sx={{ display: { xs: "inline-flex", sm: "none" } }}
             >
               <SearchOutlined />
             </IconButton>
-          )}
 
-          {/* Pantallas pequeñas */}
-          <IconButton
-            title="Search"
-            onClick={toggleSideMenu}
-            sx={{ display: { xs: "inline-flex", sm: "none" } }}
-          >
-            <SearchOutlined />
-          </IconButton>
+            <Link href="/cart">
+              <IconButton>
+                <Badge
+                  badgeContent={numberOfItems > 9 ? "+9" : numberOfItems}
+                  color="secondary"
+                >
+                  <ShoppingCartOutlined />
+                </Badge>
+              </IconButton>
+            </Link>
 
-          <Link href="/cart">
-            <IconButton>
-              <Badge
-                badgeContent={numberOfItems > 9 ? "+9" : numberOfItems}
-                color="secondary"
-              >
-                <ShoppingCartOutlined />
-              </Badge>
-            </IconButton>
-          </Link>
-
-          <Button onClick={toggleSideMenu}>Menú</Button>
-        </Box>
-      </Toolbar>
+            <Button onClick={toggleSideMenu}>Menú</Button>
+          </Box>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };
