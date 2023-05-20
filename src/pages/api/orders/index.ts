@@ -40,7 +40,6 @@ async function createOrder(req: NextApiRequest, res: NextApiResponse<Data>) {
     where: {
       id: { in: productsIds },
     },
-    include: { images: true },
   });
 
   try {

@@ -1,4 +1,5 @@
 import { NextPage, GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { getServerSession } from "next-auth";
 import {
   Typography,
@@ -13,11 +14,23 @@ import CreditCardOffOutlined from "@mui/icons-material/CreditCardOffOutlined";
 import CreditScoreOutlined from "@mui/icons-material/CreditScoreOutlined";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 
+import { tesloApi } from "@/api";
 import { CartList, OrderSummary } from "@/components/cart";
 import { ShopLayout } from "@/components/layouts";
 import { getOrderById } from "@/server/orders";
 import { MySession, authOptions } from "../api/auth/[...nextauth]";
 import { CompleteOrder, OrderSummary as IOrderSummary } from "@/interfaces";
+
+interface OrderRespondeBody {
+  id: string;
+  status:
+    | "CREATED"
+    | "SAVED"
+    | "APPROVED"
+    | "VOIDED"
+    | "COMPLETED"
+    | "PAYER_ACTION_REQUIRED";
+}
 
 interface Props {
   order: CompleteOrder;
@@ -31,6 +44,26 @@ const OrderPage: NextPage<Props> = ({ order }) => {
     subTotal: order.subTotal,
     tax: order.tax,
     total: order.total,
+  };
+
+  const router = useRouter();
+
+  const onOrderCompleted = async (details: OrderRespondeBody) => {
+    if (details.status !== "COMPLETED") {
+      return alert("There is not payment on paypal");
+    }
+
+    try {
+      const { data } = await tesloApi.post(`/orders/pay`, {
+        transactionId: details.id,
+        orderId: order.id,
+      });
+
+      router.reload();
+    } catch (error) {
+      console.log(error);
+      alert("Error");
+    }
   };
 
   return (
@@ -122,10 +155,10 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                     }}
                     onApprove={(data, actions) => {
                       return actions.order!.capture().then((details) => {
-                        console.log({ details });
-
-                        const name = details.payer.name?.given_name || "";
-                        alert(`Transaction completed by ${name}`);
+                        onOrderCompleted(details);
+                        // console.log({ details });
+                        // const name = details.payer.name?.given_name || "";
+                        // alert(`Transaction completed by ${name}`);
                       });
                     }}
                   />
