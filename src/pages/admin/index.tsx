@@ -19,7 +19,8 @@ import { DashboardData } from "@/interfaces";
 
 const DashboardPage = () => {
   const { data, error } = useSWR<DashboardData>("/api/admin/dashboard", {
-    refreshInterval: 30 * 1000, // 30 seconds
+    refreshInterval: 31 * 1000, // 30 seconds,
+    revalidateOnFocus: false,
   });
 
   const [refreshIn, setRefreshIn] = useState<number>(30);
