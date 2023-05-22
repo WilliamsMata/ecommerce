@@ -27,6 +27,8 @@ const DashboardPage = () => {
   useEffect(() => {
     if (!data) return;
 
+    setRefreshIn(30);
+
     const interval = setInterval(() => {
       setRefreshIn((prev) => (prev > 0 ? prev - 1 : 30));
     }, 1000);
