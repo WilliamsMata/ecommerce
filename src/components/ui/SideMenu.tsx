@@ -20,6 +20,7 @@ import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import AdminPanelSettings from "@mui/icons-material/AdminPanelSettings";
 import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
 import ConfirmationNumberOutlined from "@mui/icons-material/ConfirmationNumberOutlined";
+import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
 import EscalatorWarningOutlined from "@mui/icons-material/EscalatorWarningOutlined";
 import FemaleOutlined from "@mui/icons-material/FemaleOutlined";
 import LoginOutlined from "@mui/icons-material/LoginOutlined";
@@ -138,6 +139,13 @@ export const SideMenu = () => {
                   <Divider />
 
                   <ListSubheader>Admin Panel</ListSubheader>
+
+                  <ListItemButton onClick={() => navigateTo("/admin")}>
+                    <ListItemIcon>
+                      <DashboardOutlined />
+                    </ListItemIcon>
+                    <ListItemText primary={"Dashboard"} />
+                  </ListItemButton>
 
                   <ListItemButton>
                     <ListItemIcon>
