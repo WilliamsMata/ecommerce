@@ -18,11 +18,14 @@ export default async function handler(
 
   try {
     await prisma.$transaction(async (db) => {
-      await db.user.deleteMany();
+      await db.orderItem.deleteMany();
+      await db.order.deleteMany();
+      await db.shippingAddress.deleteMany();
       await db.productSize.deleteMany();
       await db.tag.deleteMany();
       await db.image.deleteMany();
       await db.product.deleteMany();
+      await db.user.deleteMany();
 
       await db.user.createMany({
         data: seedDatabase.initialData.users.map((user) => ({
