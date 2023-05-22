@@ -1,5 +1,6 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
+import useSWR from "swr";
 
 import CreditCardOffOutlined from "@mui/icons-material/CreditCardOffOutlined";
 import AttachMoneyOutlined from "@mui/icons-material/AttachMoneyOutlined";
@@ -10,72 +11,109 @@ import CancelPresentationOutlined from "@mui/icons-material/CancelPresentationOu
 import ProductionQuantityLimitsOutlined from "@mui/icons-material/ProductionQuantityLimitsOutlined";
 import AccessTimeOutlined from "@mui/icons-material/AccessTimeOutlined";
 
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/layouts";
 import { SummaryTile } from "@/components/admin";
+import { FullScreenLoading } from "@/components/ui";
+import { DashboardData } from "@/interfaces";
 
 const DashboardPage = () => {
+  const { data, error } = useSWR<DashboardData>("/api/admin/dashboard", {
+    refreshInterval: 30 * 1000, // 30 seconds
+  });
+
+  const [refreshIn, setRefreshIn] = useState<number>(30);
+
+  useEffect(() => {
+    if (!data) return;
+    console.log("data changed");
+
+    const interval = setInterval(() => {
+      console.log("Tick");
+      setRefreshIn((prev) => (prev > 0 ? prev - 1 : 30));
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [data]);
+
+  if (error) {
+    console.log(error);
+  }
+
   return (
     <AdminLayout
       title="Dashboard"
       subTitle="Operations Monitoring and Control Dashboard"
       icon={<DashboardOutlined />}
     >
-      <Grid container spacing={2}>
-        <SummaryTile
-          title={1}
-          subTitle="Total orders"
-          icon={<CreditCardOutlined color="secondary" sx={{ fontSize: 40 }} />}
-        />
+      {!error && !data && <FullScreenLoading />}
 
-        <SummaryTile
-          title={2}
-          subTitle="Paid orders"
-          icon={<AttachMoneyOutlined color="success" sx={{ fontSize: 40 }} />}
-        />
+      {error && <Typography>Error loading information</Typography>}
 
-        <SummaryTile
-          title={3}
-          subTitle="Pending orders"
-          icon={<CreditCardOffOutlined color="error" sx={{ fontSize: 40 }} />}
-        />
+      {data && (
+        <Grid container spacing={2}>
+          <SummaryTile
+            title={data.numberOfOrders}
+            subTitle="Total orders"
+            icon={
+              <CreditCardOutlined color="secondary" sx={{ fontSize: 40 }} />
+            }
+          />
 
-        <SummaryTile
-          title={4}
-          subTitle="Clients"
-          icon={<GroupOutlined color="primary" sx={{ fontSize: 40 }} />}
-        />
+          <SummaryTile
+            title={data.paidOrders}
+            subTitle="Paid orders"
+            icon={<AttachMoneyOutlined color="success" sx={{ fontSize: 40 }} />}
+          />
 
-        <SummaryTile
-          title={5}
-          subTitle="Products"
-          icon={<CategoryOutlined color="warning" sx={{ fontSize: 40 }} />}
-        />
+          <SummaryTile
+            title={data.notPaidOrders}
+            subTitle="Pending orders"
+            icon={<CreditCardOffOutlined color="error" sx={{ fontSize: 40 }} />}
+          />
 
-        <SummaryTile
-          title={6}
-          subTitle="Out of stock"
-          icon={
-            <CancelPresentationOutlined color="error" sx={{ fontSize: 40 }} />
-          }
-        />
+          <SummaryTile
+            title={data.numberOfClients}
+            subTitle="Clients"
+            icon={<GroupOutlined color="primary" sx={{ fontSize: 40 }} />}
+          />
 
-        <SummaryTile
-          title={7}
-          subTitle="Low inventory"
-          icon={
-            <ProductionQuantityLimitsOutlined
-              color="warning"
-              sx={{ fontSize: 40 }}
-            />
-          }
-        />
+          <SummaryTile
+            title={data.numberOfProducts}
+            subTitle="Products"
+            icon={<CategoryOutlined color="warning" sx={{ fontSize: 40 }} />}
+          />
 
-        <SummaryTile
-          title={8}
-          subTitle="New update on:"
-          icon={<AccessTimeOutlined color="secondary" sx={{ fontSize: 40 }} />}
-        />
-      </Grid>
+          <SummaryTile
+            title={data.productsWithNoInventory}
+            subTitle="Out of stock"
+            icon={
+              <CancelPresentationOutlined color="error" sx={{ fontSize: 40 }} />
+            }
+          />
+
+          <SummaryTile
+            title={data.lowInventory}
+            subTitle="Low inventory"
+            icon={
+              <ProductionQuantityLimitsOutlined
+                color="warning"
+                sx={{ fontSize: 40 }}
+              />
+            }
+          />
+
+          <SummaryTile
+            title={refreshIn}
+            subTitle="New update on:"
+            icon={
+              <AccessTimeOutlined color="secondary" sx={{ fontSize: 40 }} />
+            }
+          />
+        </Grid>
+      )}
     </AdminLayout>
   );
 };
