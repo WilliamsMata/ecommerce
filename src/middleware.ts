@@ -69,7 +69,7 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
       return NextResponse.redirect(url);
     }
 
-    const validRoles: Role[] = ["admin"];
+    const validRoles: Role[] = ["admin", "seo", "super_user"];
 
     if (!validRoles.includes(session.user.role)) {
       return NextResponse.redirect(new URL("/", req.url));
