@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -96,6 +97,8 @@ model User {
 enum Role {
   admin
   client
+  super_user
+  seo
 }
 
 // *** ORDERS ***
