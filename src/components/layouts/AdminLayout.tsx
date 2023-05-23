@@ -37,9 +37,8 @@ export const AdminLayout: FC<Props> = ({
         }}
       >
         <Box display="flex" flexDirection="column" sx={{ mb: 2 }}>
-          <Typography variant="h1">
-            {icon}
-            {title}
+          <Typography display="flex" alignItems="center" gap={1} variant="h1">
+            {icon} {title}
           </Typography>
 
           <Typography variant="h2">{subTitle}</Typography>

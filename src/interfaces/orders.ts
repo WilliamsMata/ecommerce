@@ -52,3 +52,10 @@ export interface OrderHistory {
   paid: boolean;
   fullName: string;
 }
+
+export interface OrderWithUser extends Order {
+  user: {
+    name: string;
+    email: string;
+  };
+}
