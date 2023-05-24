@@ -1,3 +1,5 @@
+import type { Image, Product } from "@prisma/client";
+
 export interface IProduct {
   id: string;
   description: string;
@@ -15,3 +17,7 @@ export interface IProduct {
 export type ISize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 
 export type IType = "shirts" | "pants" | "hoodies" | "hats";
+
+export interface ProductWithImages extends Product {
+  images: Image[];
+}
