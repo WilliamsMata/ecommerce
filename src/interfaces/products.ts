@@ -1,4 +1,4 @@
-import type { Image, Product } from "@prisma/client";
+import type { Image, Product, ProductSize, Tag } from "@prisma/client";
 
 export interface IProduct {
   id: string;
@@ -18,6 +18,8 @@ export type ISize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 
 export type IType = "shirts" | "pants" | "hoodies" | "hats";
 
-export interface ProductWithImages extends Product {
+export interface CompleteProduct extends Product {
   images: Image[];
+  sizes: ProductSize[];
+  tags: Tag[];
 }

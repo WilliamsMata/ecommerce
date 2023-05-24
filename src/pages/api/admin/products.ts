@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server";
-import type { ProductWithImages } from "@/interfaces";
+import type { CompleteProduct } from "@/interfaces";
 
 type Data =
   | {
       message: string;
     }
-  | ProductWithImages[];
+  | CompleteProduct[];
 
 export default function handler(
   req: NextApiRequest,
@@ -35,6 +35,8 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
       images: {
         orderBy: { order: "asc" },
       },
+      sizes: true,
+      tags: true,
     },
   });
 
