@@ -9,6 +9,7 @@ import type { GridColDef } from "@mui/x-data-grid";
 
 import { AdminLayout } from "@/components/layouts";
 import type { CompleteProduct } from "@/interfaces";
+import Link from "@/components/Link";
 
 const columns: GridColDef[] = [
   {
@@ -28,7 +29,22 @@ const columns: GridColDef[] = [
     },
     sortable: false,
   },
-  { field: "title", headerName: "Title", width: 250 },
+  {
+    field: "title",
+    headerName: "Title",
+    width: 250,
+    renderCell({ row }) {
+      return (
+        <Link
+          href={`/admin/products/${row.slug}`}
+          prefetch={false}
+          underline="always"
+        >
+          {row.title}
+        </Link>
+      );
+    },
+  },
   { field: "gender", headerName: "Gender" },
   { field: "type", headerName: "Type" },
   { field: "inStock", headerName: "inStock" },

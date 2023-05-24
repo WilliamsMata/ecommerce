@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { GetProductBySlug } from "@/interfaces";
+import type { CompleteProduct } from "@/interfaces";
 import { getProductBySlug } from "@/server/products";
 
 type Data =
   | {
       message: string;
     }
-  | GetProductBySlug;
+  | CompleteProduct;
 
 export default function handler(
   req: NextApiRequest,

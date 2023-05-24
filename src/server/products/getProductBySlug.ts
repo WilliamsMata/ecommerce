@@ -1,24 +1,20 @@
-import { GetProductBySlug } from "@/interfaces";
 import { prisma } from "../db";
+import type { CompleteProduct } from "@/interfaces";
 
-export const getProductBySlug = (
+export const getProductBySlug = async (
   slug: string
-): Promise<GetProductBySlug | null> => {
-  return prisma.product.findUnique({
+): Promise<CompleteProduct | null> => {
+  const product = await prisma.product.findUnique({
     where: {
       slug,
     },
 
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      description: true,
-      price: true,
-      inStock: true,
-      gender: true,
-      images: { select: { url: true } },
-      sizes: { select: { size: true } },
+    include: {
+      images: true,
+      sizes: true,
+      tags: true,
     },
   });
+
+  return JSON.parse(JSON.stringify(product));
 };

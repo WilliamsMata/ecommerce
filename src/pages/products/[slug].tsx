@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { NextPage, GetStaticPaths, GetStaticProps } from "next";
+import type { NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 import { Size } from "@prisma/client";
@@ -8,11 +8,11 @@ import { CartContext } from "@/context";
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ShopLayout } from "@/components/layouts";
 import { ItemCounter } from "@/components/ui";
-import { CartProduct, GetProductBySlug } from "@/interfaces";
+import type { CartProduct, CompleteProduct } from "@/interfaces";
 import { getAllProductSlug, getProductBySlug } from "@/server/products";
 
 interface Props {
-  product: GetProductBySlug;
+  product: CompleteProduct;
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
