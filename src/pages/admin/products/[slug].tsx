@@ -95,9 +95,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
     const newTag = getValues("inputTag").toLowerCase();
 
     if (newTag.length > 1 && !tags.includes(newTag)) {
-      setValue("tags", [...getValues("tags"), newTag], {
-        shouldValidate: true,
-      });
+      setValue("tags", [...getValues("tags"), newTag]);
       setValue("inputTag", "");
     }
   };
@@ -105,8 +103,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
   const onDeleteTag = (tag: string) => {
     setValue(
       "tags",
-      getValues("tags").filter((t) => t !== tag),
-      { shouldValidate: true }
+      getValues("tags").filter((t) => t !== tag)
     );
   };
 
@@ -308,19 +305,28 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
                 display: "flex",
                 flexWrap: "wrap",
                 listStyle: "none",
+                gap: 0.5,
                 p: 0,
                 m: 0,
               }}
             >
-              {getValues("tags").map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  onDelete={() => onDeleteTag(tag)}
-                  color="primary"
-                  size="small"
-                />
-              ))}
+              <Controller
+                control={control}
+                name="tags"
+                render={({ field }) => (
+                  <>
+                    {field.value.map((tag) => (
+                      <Chip
+                        key={tag}
+                        label={tag}
+                        onDelete={() => onDeleteTag(tag)}
+                        color="primary"
+                        size="small"
+                      />
+                    ))}
+                  </>
+                )}
+              />
             </Box>
 
             <Divider />
