@@ -1,8 +1,17 @@
 import { useContext, useEffect } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import {
+  Box,
+  Button,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 
 import { CartContext } from "@/context";
@@ -35,6 +44,7 @@ const AddressPage: NextPage = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    control,
   } = useForm<FormData>({
     defaultValues: {
       firstName: "",
@@ -142,7 +152,31 @@ const AddressPage: NextPage = () => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <TextField
+              <Controller
+                control={control}
+                name="country"
+                rules={{
+                  required: { value: true, message: "This field is required" },
+                }}
+                render={({ field }) => (
+                  <TextField
+                    select
+                    label="Country"
+                    fullWidth
+                    {...field}
+                    error={!!errors.country}
+                    helperText={errors.country?.message}
+                  >
+                    {countries.map(({ code, name }) => (
+                      <MenuItem key={code} value={name}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+
+              {/* <TextField
                 label="Country"
                 variant="outlined"
                 fullWidth
@@ -152,8 +186,9 @@ const AddressPage: NextPage = () => {
                 })}
                 error={!!errors.country}
                 helperText={errors.country?.message}
-              />
+              /> */}
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Phone number"
