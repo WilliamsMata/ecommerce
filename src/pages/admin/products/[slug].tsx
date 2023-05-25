@@ -9,16 +9,14 @@ import {
   Checkbox,
   Chip,
   Divider,
-  FormControl,
   FormControlLabel,
-  FormGroup,
   FormLabel,
   Grid,
   Radio,
   RadioGroup,
   TextField,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import DriveFileRenameOutline from "@mui/icons-material/DriveFileRenameOutline";
 import SaveOutlined from "@mui/icons-material/SaveOutlined";
 import UploadOutlined from "@mui/icons-material/UploadOutlined";
@@ -27,6 +25,7 @@ import { getProductBySlug } from "@/server/products";
 import { AdminLayout } from "@/components/layouts";
 import type { CompleteProduct } from "@/interfaces";
 import type { Gender, Size, Type } from "@prisma/client";
+import { useEffect } from "react";
 
 const validTypes: Type[] = ["shirts", "pants", "hoodies", "hats"];
 const validGender: Gender[] = ["men", "women", "kid", "unisex"];
@@ -40,6 +39,7 @@ interface FormData {
   price: number;
   sizes: Size[];
   slug: string;
+  inputTag: string;
   tags: string[];
   title: string;
   type: Type;
@@ -51,38 +51,64 @@ interface Props {
 }
 
 const ProductAdminPage: NextPage<Props> = ({ product }) => {
+  console.log("Rendered");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
     setValue,
+    watch,
+    control,
   } = useForm<FormData>({
     defaultValues: {
       ...product,
       images: product.images.map((image) => image.url),
       sizes: product.sizes.map((size) => size.size),
       tags: product.tags.map((tag) => tag.name),
+      inputTag: "",
     },
   });
 
-  const onChangeSize = (size: Size) => {
-    const currentSizes = getValues("sizes");
+  useEffect(() => {
+    const subscription = watch((value, { name }) => {
+      if (name === "title") {
+        const newSlug =
+          value.title
+            ?.trim()
+            .replaceAll(" ", "_")
+            .replaceAll("'", "")
+            .toLowerCase() || "";
 
-    if (currentSizes.includes(size)) {
-      // delete
-      return setValue(
-        "sizes",
-        currentSizes.filter((s) => s !== size),
-        { shouldValidate: true }
-      );
+        setValue("slug", newSlug);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [watch, setValue]);
+
+  const onAddNewTag = () => {
+    const tags = getValues("tags");
+    const newTag = getValues("inputTag").toLowerCase();
+
+    if (newTag.length > 1 && !tags.includes(newTag)) {
+      setValue("tags", [...getValues("tags"), newTag], {
+        shouldValidate: true,
+      });
+      setValue("inputTag", "");
     }
-
-    // add
-    setValue("sizes", [...currentSizes, size], { shouldValidate: true });
   };
 
-  const onDeleteTag = (tag: string) => {};
+  const onDeleteTag = (tag: string) => {
+    setValue(
+      "tags",
+      getValues("tags").filter((t) => t !== tag),
+      { shouldValidate: true }
+    );
+  };
 
   const onSubmitForm = (form: FormData) => {
     console.log(form);
@@ -169,65 +195,70 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
 
             <Divider sx={{ my: 1 }} />
 
-            <FormControl>
-              <FormLabel>Type</FormLabel>
-              <RadioGroup
-                row
-                value={getValues("type")}
-                onChange={(event) =>
-                  setValue("type", event.target.value as Type, {
-                    shouldValidate: true,
-                  })
-                }
-              >
-                {validTypes.map((option) => (
-                  <FormControlLabel
-                    key={option}
-                    value={option}
-                    control={<Radio color="secondary" />}
-                    label={capitalize(option)}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <FormLabel>Type</FormLabel>
+            <Controller
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <RadioGroup row aria-label="Type" {...field}>
+                  {validTypes.map((option) => (
+                    <FormControlLabel
+                      key={option}
+                      value={option}
+                      control={<Radio color="secondary" />}
+                      label={capitalize(option)}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
 
-            <FormControl>
-              <FormLabel>Gender</FormLabel>
-              <RadioGroup
-                row
-                value={getValues("gender")}
-                onChange={(event) =>
-                  setValue("gender", event.target.value as Gender, {
-                    shouldValidate: true,
-                  })
-                }
-                // value={ status }
-                // onChange={ onStatusChanged }
-              >
-                {validGender.map((option) => (
-                  <FormControlLabel
-                    key={option}
-                    value={option}
-                    control={<Radio color="secondary" />}
-                    label={capitalize(option)}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
+            <FormLabel>Gender</FormLabel>
+            <Controller
+              control={control}
+              name="gender"
+              render={({ field }) => (
+                <RadioGroup row aria-label="Gender" {...field}>
+                  {validGender.map((option) => (
+                    <FormControlLabel
+                      key={option}
+                      value={option}
+                      control={<Radio color="secondary" />}
+                      label={capitalize(option)}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+            />
 
-            <FormGroup>
-              <FormLabel>Sizes</FormLabel>
-              {validSizes.map((size) => (
-                <FormControlLabel
-                  key={size}
-                  control={
-                    <Checkbox checked={getValues("sizes").includes(size)} />
-                  }
-                  label={size}
-                  onChange={() => onChangeSize(size)}
-                />
-              ))}
-            </FormGroup>
+            <FormLabel>Sizes</FormLabel>
+            <Controller
+              control={control}
+              name="sizes"
+              render={({ field }) => (
+                <>
+                  {validSizes.map((size) => (
+                    <FormControlLabel
+                      key={size}
+                      label={size}
+                      control={
+                        <Checkbox
+                          checked={field.value.includes(size)}
+                          onChange={(e) => {
+                            if (field.value.includes(size)) {
+                              return field.onChange(
+                                field.value.filter((s) => s !== size)
+                              );
+                            }
+                            field.onChange([...field.value, size]);
+                          }}
+                        />
+                      }
+                    />
+                  ))}
+                </>
+              )}
+            />
           </Grid>
 
           {/* Tags e imagenes */}
@@ -259,6 +290,17 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               variant="filled"
               fullWidth
               helperText="Press [spacebar] to add"
+              {...register("inputTag")}
+              onKeyDown={(e) => {
+                if (
+                  e.code === "Tab" ||
+                  e.code === "Space" ||
+                  e.code === "Enter"
+                ) {
+                  e.preventDefault();
+                  onAddNewTag();
+                }
+              }}
             />
 
             <Box
@@ -270,11 +312,11 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
                 m: 0,
               }}
             >
-              {product.tags.map((tag) => (
+              {getValues("tags").map((tag) => (
                 <Chip
-                  key={tag.id}
-                  label={tag.name}
-                  onDelete={() => onDeleteTag(tag.name)}
+                  key={tag}
+                  label={tag}
+                  onDelete={() => onDeleteTag(tag)}
                   color="primary"
                   size="small"
                 />
