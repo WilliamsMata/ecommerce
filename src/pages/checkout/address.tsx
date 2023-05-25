@@ -5,9 +5,7 @@ import {
   Box,
   Button,
   Grid,
-  InputLabel,
   MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -175,18 +173,6 @@ const AddressPage: NextPage = () => {
                   </TextField>
                 )}
               />
-
-              {/* <TextField
-                label="Country"
-                variant="outlined"
-                fullWidth
-                defaultValue={Cookies.get("country") || countries[0].code}
-                {...register("country", {
-                  required: "This field is required",
-                })}
-                error={!!errors.country}
-                helperText={errors.country?.message}
-              /> */}
             </Grid>
 
             <Grid item xs={12} sm={6}>

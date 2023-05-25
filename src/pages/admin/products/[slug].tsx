@@ -131,131 +131,131 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
 
         <Grid container spacing={2}>
           {/* Data */}
-          <Grid
-            item
-            xs={12}
-            md={6}
-            display="Flex"
-            flexDirection="column"
-            gap={1}
-          >
-            <TextField
-              label="Title"
-              variant="filled"
-              fullWidth
-              {...register("title", {
-                required: "This field is required",
-                minLength: { value: 2, message: "Mínimo 2 caracteres" },
-              })}
-              error={!!errors.title}
-              helperText={errors.title?.message}
-            />
+          <Grid item xs={12} md={6}>
+            <Box display="Flex" flexDirection="column" gap={1}>
+              <TextField
+                label="Title"
+                variant="filled"
+                fullWidth
+                autoComplete="off"
+                {...register("title", {
+                  required: "This field is required",
+                  minLength: { value: 2, message: "Mínimo 2 caracteres" },
+                })}
+                error={!!errors.title}
+                helperText={errors.title?.message}
+              />
 
-            <TextField
-              label="Description"
-              variant="filled"
-              fullWidth
-              multiline
-              rows={6}
-              {...register("description", {
-                required: "This field is required",
-              })}
-              error={!!errors.description}
-              helperText={errors.description?.message}
-            />
+              <TextField
+                label="Description"
+                variant="filled"
+                fullWidth
+                multiline
+                rows={6}
+                {...register("description", {
+                  required: "This field is required",
+                })}
+                error={!!errors.description}
+                helperText={errors.description?.message}
+              />
 
-            <TextField
-              label="In stock"
-              type="number"
-              variant="filled"
-              fullWidth
-              {...register("inStock", {
-                required: "This field is required",
-                min: { value: 0, message: "Minimum value cero" },
-              })}
-              error={!!errors.inStock}
-              helperText={errors.inStock?.message}
-            />
+              <TextField
+                label="In stock"
+                type="number"
+                variant="filled"
+                fullWidth
+                {...register("inStock", {
+                  required: "This field is required",
+                  min: { value: 0, message: "Minimum value cero" },
+                })}
+                error={!!errors.inStock}
+                helperText={errors.inStock?.message}
+              />
 
-            <TextField
-              label="Price"
-              type="number"
-              variant="filled"
-              fullWidth
-              {...register("price", {
-                required: "This field is required",
-                min: { value: 0, message: "Minimum value cero" },
-              })}
-              error={!!errors.price}
-              helperText={errors.price?.message}
-            />
+              <TextField
+                label="Price"
+                type="number"
+                variant="filled"
+                fullWidth
+                {...register("price", {
+                  required: "This field is required",
+                  min: { value: 0, message: "Minimum value cero" },
+                })}
+                error={!!errors.price}
+                helperText={errors.price?.message}
+              />
+            </Box>
 
             <Divider sx={{ my: 1 }} />
 
-            <FormLabel>Type</FormLabel>
-            <Controller
-              control={control}
-              name="type"
-              render={({ field }) => (
-                <RadioGroup row aria-label="Type" {...field}>
-                  {validTypes.map((option) => (
-                    <FormControlLabel
-                      key={option}
-                      value={option}
-                      control={<Radio color="secondary" />}
-                      label={capitalize(option)}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
-            />
+            <Box>
+              <FormLabel>Type</FormLabel>
+              <Controller
+                control={control}
+                name="type"
+                render={({ field }) => (
+                  <RadioGroup row aria-label="Type" {...field}>
+                    {validTypes.map((option) => (
+                      <FormControlLabel
+                        key={option}
+                        value={option}
+                        control={<Radio color="secondary" />}
+                        label={capitalize(option)}
+                      />
+                    ))}
+                  </RadioGroup>
+                )}
+              />
 
-            <FormLabel>Gender</FormLabel>
-            <Controller
-              control={control}
-              name="gender"
-              render={({ field }) => (
-                <RadioGroup row aria-label="Gender" {...field}>
-                  {validGender.map((option) => (
-                    <FormControlLabel
-                      key={option}
-                      value={option}
-                      control={<Radio color="secondary" />}
-                      label={capitalize(option)}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
-            />
+              <FormLabel>Gender</FormLabel>
+              <Controller
+                control={control}
+                name="gender"
+                render={({ field }) => (
+                  <RadioGroup row aria-label="Gender" {...field}>
+                    {validGender.map((option) => (
+                      <FormControlLabel
+                        key={option}
+                        value={option}
+                        control={<Radio color="secondary" />}
+                        label={capitalize(option)}
+                      />
+                    ))}
+                  </RadioGroup>
+                )}
+              />
 
-            <FormLabel>Sizes</FormLabel>
-            <Controller
-              control={control}
-              name="sizes"
-              render={({ field }) => (
-                <>
-                  {validSizes.map((size) => (
-                    <FormControlLabel
-                      key={size}
-                      label={size}
-                      control={
-                        <Checkbox
-                          checked={field.value.includes(size)}
-                          onChange={(e) => {
-                            if (field.value.includes(size)) {
-                              return field.onChange(
-                                field.value.filter((s) => s !== size)
-                              );
-                            }
-                            field.onChange([...field.value, size]);
-                          }}
+              <FormLabel>Sizes</FormLabel>
+              <Box display="flex" flexWrap="wrap">
+                <Controller
+                  control={control}
+                  name="sizes"
+                  render={({ field }) => (
+                    <>
+                      {validSizes.map((size) => (
+                        <FormControlLabel
+                          key={size}
+                          label={size}
+                          control={
+                            <Checkbox
+                              checked={field.value.includes(size)}
+                              onChange={(e) => {
+                                if (field.value.includes(size)) {
+                                  return field.onChange(
+                                    field.value.filter((s) => s !== size)
+                                  );
+                                }
+                                field.onChange([...field.value, size]);
+                              }}
+                            />
+                          }
                         />
-                      }
-                    />
-                  ))}
-                </>
-              )}
-            />
+                      ))}
+                    </>
+                  )}
+                />
+              </Box>
+            </Box>
           </Grid>
 
           {/* Tags e imagenes */}
@@ -271,6 +271,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               label="Slug - URL"
               variant="filled"
               fullWidth
+              autoComplete="off"
               {...register("slug", {
                 required: "This field is required",
                 validate: (value) =>
@@ -286,6 +287,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               label="Tags"
               variant="filled"
               fullWidth
+              autoComplete="off"
               helperText="Press [spacebar] to add"
               {...register("inputTag")}
               onKeyDown={(e) => {
