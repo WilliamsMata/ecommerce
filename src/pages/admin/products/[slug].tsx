@@ -18,6 +18,7 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
+import { useForm } from "react-hook-form";
 import DriveFileRenameOutline from "@mui/icons-material/DriveFileRenameOutline";
 import SaveOutlined from "@mui/icons-material/SaveOutlined";
 import UploadOutlined from "@mui/icons-material/UploadOutlined";
@@ -31,12 +32,61 @@ const validTypes: Type[] = ["shirts", "pants", "hoodies", "hats"];
 const validGender: Gender[] = ["men", "women", "kid", "unisex"];
 const validSizes: Size[] = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
+interface FormData {
+  id?: string;
+  description: string;
+  images: string[];
+  inStock: number;
+  price: number;
+  sizes: Size[];
+  slug: string;
+  tags: string[];
+  title: string;
+  type: Type;
+  gender: Gender;
+}
+
 interface Props {
   product: CompleteProduct;
 }
 
 const ProductAdminPage: NextPage<Props> = ({ product }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    setValue,
+  } = useForm<FormData>({
+    defaultValues: {
+      ...product,
+      images: product.images.map((image) => image.url),
+      sizes: product.sizes.map((size) => size.size),
+      tags: product.tags.map((tag) => tag.name),
+    },
+  });
+
+  const onChangeSize = (size: Size) => {
+    const currentSizes = getValues("sizes");
+
+    if (currentSizes.includes(size)) {
+      // delete
+      return setValue(
+        "sizes",
+        currentSizes.filter((s) => s !== size),
+        { shouldValidate: true }
+      );
+    }
+
+    // add
+    setValue("sizes", [...currentSizes, size], { shouldValidate: true });
+  };
+
   const onDeleteTag = (tag: string) => {};
+
+  const onSubmitForm = (form: FormData) => {
+    console.log(form);
+  };
 
   return (
     <AdminLayout
@@ -44,7 +94,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
       subTitle={`Editing: ${product.title}`}
       icon={<DriveFileRenameOutline />}
     >
-      <form>
+      <form onSubmit={handleSubmit(onSubmitForm)}>
         <Box display="flex" justifyContent="end" sx={{ mb: 1 }}>
           <Button
             color="secondary"
@@ -70,13 +120,12 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               label="Title"
               variant="filled"
               fullWidth
-
-              // { ...register('name', {
-              //     required: 'Este campo es requerido',
-              //     minLength: { value: 2, message: 'Mínimo 2 caracteres' }
-              // })}
-              // error={ !!errors.name }
-              // helperText={ errors.name?.message }
+              {...register("title", {
+                required: "This field is required",
+                minLength: { value: 2, message: "Mínimo 2 caracteres" },
+              })}
+              error={!!errors.title}
+              helperText={errors.title?.message}
             />
 
             <TextField
@@ -84,6 +133,12 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               variant="filled"
               fullWidth
               multiline
+              rows={6}
+              {...register("description", {
+                required: "This field is required",
+              })}
+              error={!!errors.description}
+              helperText={errors.description?.message}
             />
 
             <TextField
@@ -91,9 +146,26 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               type="number"
               variant="filled"
               fullWidth
+              {...register("inStock", {
+                required: "This field is required",
+                min: { value: 0, message: "Minimum value cero" },
+              })}
+              error={!!errors.inStock}
+              helperText={errors.inStock?.message}
             />
 
-            <TextField label="Price" type="number" variant="filled" fullWidth />
+            <TextField
+              label="Price"
+              type="number"
+              variant="filled"
+              fullWidth
+              {...register("price", {
+                required: "This field is required",
+                min: { value: 0, message: "Minimum value cero" },
+              })}
+              error={!!errors.price}
+              helperText={errors.price?.message}
+            />
 
             <Divider sx={{ my: 1 }} />
 
@@ -101,8 +173,12 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               <FormLabel>Type</FormLabel>
               <RadioGroup
                 row
-                // value={ status }
-                // onChange={ onStatusChanged }
+                value={getValues("type")}
+                onChange={(event) =>
+                  setValue("type", event.target.value as Type, {
+                    shouldValidate: true,
+                  })
+                }
               >
                 {validTypes.map((option) => (
                   <FormControlLabel
@@ -119,6 +195,12 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               <FormLabel>Gender</FormLabel>
               <RadioGroup
                 row
+                value={getValues("gender")}
+                onChange={(event) =>
+                  setValue("gender", event.target.value as Gender, {
+                    shouldValidate: true,
+                  })
+                }
                 // value={ status }
                 // onChange={ onStatusChanged }
               >
@@ -138,8 +220,11 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               {validSizes.map((size) => (
                 <FormControlLabel
                   key={size}
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox checked={getValues("sizes").includes(size)} />
+                  }
                   label={size}
+                  onChange={() => onChangeSize(size)}
                 />
               ))}
             </FormGroup>
@@ -154,13 +239,26 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
             flexDirection="column"
             gap={1}
           >
-            <TextField label="Slug - URL" variant="filled" fullWidth />
+            <TextField
+              label="Slug - URL"
+              variant="filled"
+              fullWidth
+              {...register("slug", {
+                required: "This field is required",
+                validate: (value) =>
+                  value.trim().includes(" ")
+                    ? "Cannot have blank spaces"
+                    : undefined,
+              })}
+              error={!!errors.slug}
+              helperText={errors.slug?.message}
+            />
 
             <TextField
               label="Tags"
               variant="filled"
               fullWidth
-              helperText="Presiona [spacebar] para agregar"
+              helperText="Press [spacebar] to add"
             />
 
             <Box
@@ -172,17 +270,15 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
                 m: 0,
               }}
             >
-              {product.tags.map((tag) => {
-                return (
-                  <Chip
-                    key={tag.name}
-                    label={tag.name}
-                    onDelete={() => onDeleteTag(tag.name)}
-                    color="primary"
-                    size="small"
-                  />
-                );
-              })}
+              {product.tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  label={tag.name}
+                  onDelete={() => onDeleteTag(tag.name)}
+                  color="primary"
+                  size="small"
+                />
+              ))}
             </Box>
 
             <Divider />
