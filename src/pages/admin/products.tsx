@@ -1,9 +1,9 @@
-import React from "react";
 import type { NextPage } from "next";
 import Image from "next/image";
 import useSWR from "swr";
+import { Box, Button, Grid } from "@mui/material";
 import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
-import { Grid } from "@mui/material";
+import AddOutlined from "@mui/icons-material/AddOutlined";
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
 
@@ -74,7 +74,16 @@ const ProductsPage: NextPage = () => {
       title={`Products ${data.length > 0 ? `(${data.length})` : ""}`}
       subTitle="Products Management Dashboard"
       icon={<CategoryOutlined />}
+      maxWidth="lg"
     >
+      <Box display="flex" justifyContent="end">
+        <Link href="/admin/products/new">
+          <Button startIcon={<AddOutlined />} color="secondary">
+            Create new product
+          </Button>
+        </Link>
+      </Box>
+
       <Grid container sx={{ pt: 2 }} className="fadeIn">
         <Grid item xs={12}>
           <DataGrid

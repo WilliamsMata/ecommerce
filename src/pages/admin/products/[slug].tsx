@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -53,6 +54,8 @@ interface Props {
 
 const ProductAdminPage: NextPage<Props> = ({ product }) => {
   console.log("Rendered");
+
+  const router = useRouter();
 
   const {
     register,
@@ -116,14 +119,14 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
     try {
       const { data } = await tesloApi({
         url: "/admin/products",
-        method: "PUT", // si tenemos un id actualizar si no crear
+        method: form.id ? "PUT" : "POST",
         data: rest,
       });
 
       console.log({ data });
 
       if (!form.id) {
-        //todo recargar el navegador
+        router.replace(`/admin/products/${form.slug}`);
       }
     } catch (error) {
       console.log(error);
@@ -399,7 +402,33 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { slug = "" } = query;
 
-  const product = await getProductBySlug(slug.toString());
+  let product: CompleteProduct | null;
+
+  if (slug === "new") {
+    //create new product
+    product = {
+      id: "",
+      title: "",
+      description: "",
+      gender: "unisex",
+      images: [
+        { order: 0, url: "img1.jpg" },
+        { order: 0, url: "img2.jpg" },
+      ],
+      inStock: 0,
+      price: 0,
+      sizes: [],
+      slug: "",
+      tags: [],
+      type: "shirts",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    product = JSON.parse(JSON.stringify(product));
+  } else {
+    product = await getProductBySlug(slug.toString());
+  }
 
   if (!product) {
     return {

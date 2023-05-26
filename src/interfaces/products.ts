@@ -27,7 +27,7 @@ export type ISize = "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
 export type IType = "shirts" | "pants" | "hoodies" | "hats";
 
 export interface CompleteProduct extends Product {
-  images: Image[];
+  images: { order: number; url: string }[];
   sizes: ProductSize[];
   tags: Tag[];
 }
