@@ -22,7 +22,7 @@ export default function handler(
       return updateProduct(req, res);
 
     case "POST":
-      return;
+      return createProduct(req, res);
 
     default:
       return res.status(400).json({ message: "Bad request" });
@@ -143,5 +143,60 @@ async function updateProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Error when updating the product" });
+  }
+}
+
+async function createProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const {
+    id = "",
+    images = [],
+    tags,
+    sizes,
+    price,
+    inStock,
+    ...body
+  } = req.body as UpdateProduct;
+
+  if (images.length < 2) {
+    return res.status(400).json({ message: "You need at least 2 images" });
+  }
+
+  try {
+    const product = await prisma.product.create({
+      data: {
+        ...body,
+        inStock: Number(inStock),
+        price: Number(price),
+        images: {
+          create: images.map((img, i) => ({
+            url: img,
+            order: i,
+          })),
+        },
+        tags: {
+          connectOrCreate: tags.map((tag) => ({
+            where: { name: tag },
+            create: { name: tag },
+          })),
+        },
+        sizes: {
+          connectOrCreate: sizes.map((size) => ({
+            where: { size },
+            create: { size },
+          })),
+        },
+      },
+
+      include: {
+        images: true,
+        sizes: true,
+        tags: true,
+      },
+    });
+
+    return res.status(201).json(product);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error when creating the product" });
   }
 }
