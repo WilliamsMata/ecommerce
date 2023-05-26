@@ -1,4 +1,12 @@
-import type { Image, Product, ProductSize, Tag } from "@prisma/client";
+import type {
+  Gender,
+  Image,
+  Product,
+  ProductSize,
+  Size,
+  Tag,
+  Type,
+} from "@prisma/client";
 
 export interface IProduct {
   id: string;
@@ -22,4 +30,18 @@ export interface CompleteProduct extends Product {
   images: Image[];
   sizes: ProductSize[];
   tags: Tag[];
+}
+
+export interface UpdateProduct {
+  id?: string;
+  description: string;
+  images: string[];
+  inStock: number;
+  price: number;
+  sizes: Size[];
+  slug: string;
+  tags: string[];
+  title: string;
+  type: Type;
+  gender: Gender;
 }

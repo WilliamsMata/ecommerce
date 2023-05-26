@@ -26,6 +26,7 @@ import { AdminLayout } from "@/components/layouts";
 import type { CompleteProduct } from "@/interfaces";
 import type { Gender, Size, Type } from "@prisma/client";
 import { useEffect } from "react";
+import { tesloApi } from "@/api";
 
 const validTypes: Type[] = ["shirts", "pants", "hoodies", "hats"];
 const validGender: Gender[] = ["men", "women", "kid", "unisex"];
@@ -56,7 +57,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     getValues,
     setValue,
     watch,
@@ -107,8 +108,26 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
     );
   };
 
-  const onSubmitForm = (form: FormData) => {
-    console.log(form);
+  const onSubmitForm = async (form: FormData) => {
+    const { inputTag, ...rest } = form;
+
+    if (form.images.length < 2) return alert("At least 2 images");
+
+    try {
+      const { data } = await tesloApi({
+        url: "/admin/products",
+        method: "PUT", // si tenemos un id actualizar si no crear
+        data: rest,
+      });
+
+      console.log({ data });
+
+      if (!form.id) {
+        //todo recargar el navegador
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -124,6 +143,7 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
             startIcon={<SaveOutlined />}
             sx={{ width: "150px" }}
             type="submit"
+            disabled={isSubmitting}
           >
             Save
           </Button>
