@@ -1,3 +1,4 @@
+import { type ChangeEvent, useEffect, useRef } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -26,7 +27,6 @@ import { getProductBySlug } from "@/server/products";
 import { AdminLayout } from "@/components/layouts";
 import type { CompleteProduct } from "@/interfaces";
 import type { Gender, Size, Type } from "@prisma/client";
-import { useEffect } from "react";
 import { tesloApi } from "@/api";
 
 const validTypes: Type[] = ["shirts", "pants", "hoodies", "hats"];
@@ -56,6 +56,8 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
   console.log("Rendered");
 
   const router = useRouter();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -109,6 +111,26 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
       "tags",
       getValues("tags").filter((t) => t !== tag)
     );
+  };
+
+  const onFileSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (!target.files || target.files.length === 0) return;
+
+    try {
+      for (const file of target.files) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const { data } = await tesloApi.post<{ message: string }>(
+          "/admin/upload",
+          formData
+        );
+
+        console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onSubmitForm = async (form: FormData) => {
@@ -362,9 +384,18 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
                 color="secondary"
                 fullWidth
                 startIcon={<UploadOutlined />}
+                onClick={() => fileInputRef.current?.click()}
               >
                 Load images
               </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/png, image/gid, image/jpg, image/jpeg"
+                style={{ display: "none" }}
+                onChange={onFileSelected}
+              />
 
               <Chip
                 label="At least 2 images are required"
