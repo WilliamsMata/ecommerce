@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import formidable from "formidable";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config(process.env.CLOUDINARY_URL || "");
 
 type Data = {
   message: string;
@@ -25,27 +28,33 @@ export default function handler(
   }
 }
 
-const saveFile = async (file: formidable.File) => {
-  const data = fs.readFileSync(file.filepath);
-  fs.writeFileSync(`./public/${file.originalFilename}`, data);
-  fs.unlinkSync(file.filepath);
+const saveFile = async (file: formidable.File): Promise<string> => {
+  // const data = fs.readFileSync(file.filepath);
+  // fs.writeFileSync(`./public/${file.originalFilename}`, data);
+  // fs.unlinkSync(file.filepath);
+
+  const { secure_url } = await cloudinary.uploader.upload(file.filepath, {
+    folder: "Teslo-shop",
+  });
+
+  return secure_url;
 };
 
-const parseFiles = async (req: NextApiRequest) => {
+const parseFiles = async (req: NextApiRequest): Promise<string> => {
   const form = new formidable.IncomingForm();
   return new Promise((resolve, reject) => {
     form.parse(req, async (err, fields, files) => {
       if (err) return reject(err);
 
-      await saveFile(files.file as formidable.File);
+      const filePath = await saveFile(files.file as formidable.File);
 
-      resolve(true);
+      resolve(filePath);
     });
   });
 };
 
 async function uploadFile(req: NextApiRequest, res: NextApiResponse<Data>) {
-  await parseFiles(req);
+  const imageUrl = await parseFiles(req);
 
-  return res.status(200).json({ message: "Imagen subida" });
+  return res.status(200).json({ message: imageUrl });
 }
