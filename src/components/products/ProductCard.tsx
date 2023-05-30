@@ -47,7 +47,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
               }}
             >
               <Image
-                src={`/products/${product.images[0].url}`}
+                src={product.images[0].url}
                 alt={product.title}
                 fill
                 sizes="(max-width: 600px) 50vw,
@@ -60,7 +60,7 @@ export const ProductCard: FC<Props> = ({ product }) => {
                 priority={true}
               />
               <Image
-                src={`/products/${product.images[1].url}`}
+                src={product.images[1].url}
                 alt={product.title}
                 fill
                 sizes="(max-width: 600px) 50vw,

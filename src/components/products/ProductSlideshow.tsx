@@ -18,13 +18,11 @@ export const ProductSlideshow: FC<Props> = ({ images }) => {
       transitionDuration={500}
     >
       {images.map((image) => {
-        const url = `/products/${image.url}`;
-
         return (
           <div className={styles["each-slide"]} key={image.url}>
             <div
               style={{
-                backgroundImage: `url(${url})`,
+                backgroundImage: `url(${image.url})`,
                 backgroundSize: "cover",
               }}
             ></div>

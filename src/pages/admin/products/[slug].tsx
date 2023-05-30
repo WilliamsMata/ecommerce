@@ -53,8 +53,6 @@ interface Props {
 }
 
 const ProductAdminPage: NextPage<Props> = ({ product }) => {
-  console.log("Rendered");
-
   const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement>(null);

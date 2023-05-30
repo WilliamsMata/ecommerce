@@ -37,7 +37,7 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
     genderToFind = gender as Gender;
   }
 
-  const products = await prisma.product.findMany({
+  const dbProducts = await prisma.product.findMany({
     where: {
       gender: genderToFind,
     },
@@ -54,6 +54,14 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
       createdAt: "asc",
     },
   });
+
+  const products: GetProducts[] = dbProducts.map((product) => ({
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: image.url.includes("http") ? image.url : `/products/${image.url}`,
+    })),
+  }));
 
   return res.status(200).json(products);
 }
