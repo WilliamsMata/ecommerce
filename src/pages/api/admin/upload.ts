@@ -1,9 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
 import formidable from "formidable";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config(process.env.CLOUDINARY_URL || "");
+import cloudinary from "@/server/cloudinary";
 
 type Data = {
   message: string;

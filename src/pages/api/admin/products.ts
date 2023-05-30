@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server";
 import type { CompleteProduct, UpdateProduct } from "@/interfaces";
 import { validations } from "@/utils";
+import cloudinary from "@/server/cloudinary";
 
 type Data =
   | {
@@ -97,6 +98,14 @@ async function updateProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
     const sizesToDelete = existingSizes.filter((size) => !sizes.includes(size));
     const sizesToAdd = sizes.filter((size) => !existingSizes.includes(size));
 
+    urlsToDelete.forEach(async (img) => {
+      const [fileId, extension] = img
+        .substring(img.lastIndexOf("/") + 1)
+        .split(".");
+
+      await cloudinary.uploader.destroy(`Teslo-shop/${fileId}`);
+    });
+
     const updateProduct = await prisma.product.update({
       where: { id },
       data: {
@@ -112,7 +121,7 @@ async function updateProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
             where: { url: img },
             create: {
               url: img,
-              order: i,
+              order: existingImageUrls.length - urlsToDelete.length + i,
             },
           })),
         },

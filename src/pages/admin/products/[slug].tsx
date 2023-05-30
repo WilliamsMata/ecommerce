@@ -126,11 +126,18 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
           formData
         );
 
-        console.log(data);
+        setValue("images", [...getValues("images"), data.message]);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onDeleteImage = (url: string) => {
+    setValue(
+      "images",
+      getValues("images").filter((img) => img !== url)
+    );
   };
 
   const onSubmitForm = async (form: FormData) => {
@@ -404,23 +411,36 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
               />
 
               <Grid container spacing={2}>
-                {product.images.map((img) => (
-                  <Grid item xs={4} sm={3} key={img.url}>
-                    <Card>
-                      <CardMedia
-                        component="img"
-                        className="fadeIn"
-                        image={`/products/${img.url}`}
-                        alt={img.url}
-                      />
-                      <CardActions>
-                        <Button fullWidth color="error">
-                          Delete
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
+                <Controller
+                  control={control}
+                  name="images"
+                  render={({ field }) => (
+                    <>
+                      {field.value.map((img) => (
+                        <Grid item xs={4} sm={3} key={img}>
+                          <Card>
+                            <CardMedia
+                              component="img"
+                              className="fadeIn"
+                              image={img}
+                              alt={img}
+                              sx={{ aspectRatio: "1/1" }}
+                            />
+                            <CardActions>
+                              <Button
+                                fullWidth
+                                color="error"
+                                onClick={() => onDeleteImage(img)}
+                              >
+                                Delete
+                              </Button>
+                            </CardActions>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </>
+                  )}
+                />
               </Grid>
             </Box>
           </Grid>
