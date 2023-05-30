@@ -31,7 +31,7 @@ export default function handler(
 }
 
 async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const products = await prisma.product.findMany({
+  const dbProducts = await prisma.product.findMany({
     orderBy: { title: "asc" },
 
     include: {
@@ -43,8 +43,13 @@ async function getProducts(req: NextApiRequest, res: NextApiResponse<Data>) {
     },
   });
 
-  // Todo:
-  // Tendremos que actualizar las imágenes
+  const products: CompleteProduct[] = dbProducts.map((product) => ({
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: image.url.includes("http") ? image.url : `/products/${image.url}`,
+    })),
+  }));
 
   return res.status(200).json(products);
 }

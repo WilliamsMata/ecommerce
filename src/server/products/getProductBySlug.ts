@@ -16,5 +16,12 @@ export const getProductBySlug = async (
     },
   });
 
+  if (!product) return null;
+
+  product.images = product.images.map((image) => ({
+    ...image,
+    url: image.url.includes("http") ? image.url : `/products/${image.url}`,
+  }));
+
   return JSON.parse(JSON.stringify(product));
 };

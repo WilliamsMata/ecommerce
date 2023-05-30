@@ -18,12 +18,7 @@ const columns: GridColDef[] = [
     renderCell({ row }) {
       return (
         <a href={`/products/${row.slug}`} target="_blank">
-          <Image
-            src={`/products/${row.img}`}
-            alt={row.title}
-            width={90}
-            height={90}
-          />
+          <Image src={row.img} alt={row.title} width={90} height={90} />
         </a>
       );
     },

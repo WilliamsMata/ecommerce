@@ -404,10 +404,19 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
                 onChange={onFileSelected}
               />
 
-              <Chip
-                label="At least 2 images are required"
-                color="error"
-                variant="outlined"
+              <Controller
+                control={control}
+                name="images"
+                render={({ field }) => (
+                  <Chip
+                    label="At least 2 images are required"
+                    color="error"
+                    variant="outlined"
+                    sx={{
+                      display: field.value.length < 2 ? "flex" : "none",
+                    }}
+                  />
+                )}
               />
 
               <Grid container spacing={2}>

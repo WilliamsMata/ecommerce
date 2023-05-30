@@ -1,10 +1,12 @@
 import { prisma } from "../db";
 import { GetProducts } from "@/interfaces";
 
-export const getProductByTerm = (term: string): Promise<GetProducts[]> => {
+export const getProductByTerm = async (
+  term: string
+): Promise<GetProducts[]> => {
   term = term.toString().toLowerCase();
 
-  return prisma.product.findMany({
+  const dbProducts = await prisma.product.findMany({
     where: {
       OR: [
         { title: { contains: term } },
@@ -20,4 +22,14 @@ export const getProductByTerm = (term: string): Promise<GetProducts[]> => {
       images: { select: { url: true } },
     },
   });
+
+  const products: GetProducts[] = dbProducts.map((product) => ({
+    ...product,
+    images: product.images.map((image) => ({
+      ...image,
+      url: image.url.includes("http") ? image.url : `/products/${image.url}`,
+    })),
+  }));
+
+  return products;
 };
