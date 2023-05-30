@@ -126,7 +126,7 @@ export const Navbar = () => {
               </IconButton>
             </Link>
 
-            <Button onClick={toggleSideMenu}>Menú</Button>
+            <Button onClick={toggleSideMenu}>Menu</Button>
           </Box>
         </Toolbar>
       </Container>
