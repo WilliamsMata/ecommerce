@@ -27,17 +27,28 @@ const SearchPage: NextPage<Props> = ({ products, foundProducts, query }) => {
           {query}
         </Typography>
       ) : (
-        <Box display="flex" gap={2} sx={{ my: 1 }}>
-          <Typography variant="h2">
-            {"We couldn't find any products"}
-          </Typography>
-          <Typography variant="h2" color="secondary" textTransform="capitalize">
-            {query}
-          </Typography>
-        </Box>
+        <>
+          <Box display="flex" gap={2} sx={{ my: 1 }}>
+            <Typography variant="h2">
+              {"We couldn't find any products with: "}
+            </Typography>
+            <Typography
+              variant="h2"
+              color="secondary"
+              textTransform="capitalize"
+            >
+              {query}
+            </Typography>
+          </Box>
+          <Box display="flex" gap={2} sx={{ my: 1 }}>
+            <Typography variant="body1">
+              {"Here we have other articles that might interest you."}
+            </Typography>
+          </Box>
+        </>
       )}
 
-      <ProductList products={products} />
+      <ProductList products={products} isLoading={false} />
     </ShopLayout>
   );
 };
