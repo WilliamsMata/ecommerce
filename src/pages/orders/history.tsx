@@ -1,5 +1,7 @@
 import { NextPage, GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
+import { getSession, useSession } from "next-auth/react";
+import useSWR from "swr";
 import { Chip, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -40,12 +42,16 @@ const columns: GridColDef[] = [
   },
 ];
 
-interface Props {
-  orders: OrderHistory[];
-}
+const HistoryPage: NextPage = () => {
+  const { data: session, status } = useSession();
 
-const HistoryPage: NextPage<Props> = ({ orders }) => {
-  const rows = orders.map((order, i) => ({
+  const mySession = session as MySession;
+
+  const { data = [], isLoading } = useSWR<OrderHistory[]>(
+    session ? `/api/orders/${mySession.user.id}` : null
+  );
+
+  const rows = data.map((order, i) => ({
     id: i + 1,
     paid: order.paid,
     fullName: order.fullName,
@@ -65,32 +71,13 @@ const HistoryPage: NextPage<Props> = ({ orders }) => {
             rows={rows}
             columns={columns}
             autoPageSize
+            loading={isLoading || status === "loading"}
             sx={{ height: "calc(100vh - 250px)" }}
           />
         </Grid>
       </Grid>
     </ShopLayout>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  req,
-  res,
-}) => {
-  const session: MySession | null = await getServerSession(
-    req,
-    res,
-    authOptions
-  );
-  // Session is always true (Checked in middleware)
-
-  const orders = await getOrdersByUserId(session!.user.id);
-
-  return {
-    props: {
-      orders,
-    },
-  };
 };
 
 export default HistoryPage;
