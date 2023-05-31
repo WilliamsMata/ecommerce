@@ -467,10 +467,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       title: "",
       description: "",
       gender: "unisex",
-      images: [
-        { order: 0, url: "img1.jpg" },
-        { order: 0, url: "img2.jpg" },
-      ],
+      images: [],
       inStock: 0,
       price: 0,
       sizes: [],
