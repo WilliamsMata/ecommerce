@@ -150,8 +150,6 @@ const ProductAdminPage: NextPage<Props> = ({ product }) => {
         data: rest,
       });
 
-      console.log({ data });
-
       if (!form.id) {
         router.replace(`/admin/products/${form.slug}`);
       }

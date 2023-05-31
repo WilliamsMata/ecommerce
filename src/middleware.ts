@@ -6,7 +6,6 @@ import { Role } from "@prisma/client";
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
   // Useful user information
   const session: any = await getToken({ req });
-  console.log({ session });
 
   /* 
     Check if there is SESSION for Redirect to previous page

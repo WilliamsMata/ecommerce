@@ -22,11 +22,7 @@ const HomePage: NextPage = () => {
         Products:
       </Typography>
 
-      {isLoading ? (
-        <FullScreenLoading />
-      ) : (
-        <ProductList products={data ? data : []} />
-      )}
+      <ProductList products={data ? data : []} isLoading={isLoading} />
     </ShopLayout>
   );
 };

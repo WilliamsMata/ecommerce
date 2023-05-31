@@ -13,15 +13,17 @@ import AccessTimeOutlined from "@mui/icons-material/AccessTimeOutlined";
 
 import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/layouts";
-import { SummaryTile } from "@/components/admin";
-import { FullScreenLoading } from "@/components/ui";
+import { SummaryTile, SummaryTileSkeleton } from "@/components/admin";
 import { DashboardData } from "@/interfaces";
 
 const DashboardPage = () => {
-  const { data, error } = useSWR<DashboardData>("/api/admin/dashboard", {
-    refreshInterval: 31 * 1000, // 30 seconds,
-    revalidateOnFocus: false,
-  });
+  const { data, error, isLoading } = useSWR<DashboardData>(
+    "/api/admin/dashboard",
+    {
+      refreshInterval: 31 * 1000, // 30 seconds,
+      revalidateOnFocus: false,
+    }
+  );
 
   const [refreshIn, setRefreshIn] = useState<number>(30);
 
@@ -49,9 +51,15 @@ const DashboardPage = () => {
       subTitle="Operations Monitoring and Control Dashboard"
       icon={<DashboardOutlined />}
     >
-      {!error && !data && <FullScreenLoading />}
-
       {error && <Typography>Error loading information</Typography>}
+
+      {isLoading && (
+        <Grid container spacing={2}>
+          {Array.from({ length: 8 }, (d, i) => i + 1).map((i) => (
+            <SummaryTileSkeleton key={i} />
+          ))}
+        </Grid>
+      )}
 
       {data && (
         <Grid container spacing={2}>
