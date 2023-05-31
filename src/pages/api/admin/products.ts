@@ -73,7 +73,9 @@ async function updateProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
     return res.status(400).json({ message: "You need at least 2 images" });
   }
 
-  // TODO: Posiblemente tendremos un localhost:3000/products/asf.jpg
+  const filteredImages = images.map((image) =>
+    image.includes("https") ? image : image.replace("/products/", "")
+  );
 
   try {
     const product = await prisma.product.findUnique({
@@ -91,9 +93,11 @@ async function updateProduct(req: NextApiRequest, res: NextApiResponse<Data>) {
 
     const existingImageUrls = product.images.map((image) => image.url);
     const urlsToDelete = existingImageUrls.filter(
-      (url) => !images.includes(url)
+      (url) => !filteredImages.includes(url)
     );
-    const urlsToAdd = images.filter((url) => !existingImageUrls.includes(url));
+    const urlsToAdd = filteredImages.filter(
+      (url) => !existingImageUrls.includes(url)
+    );
 
     const existingTags = product.tags.map((tag) => tag.name);
     const tagsToDelete = existingTags.filter((tag) => !tags.includes(tag));
