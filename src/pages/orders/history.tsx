@@ -1,14 +1,12 @@
-import { NextPage, GetServerSideProps } from "next";
-import { getServerSession } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
+import { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { Chip, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { ShopLayout } from "@/components/layouts";
 import Link from "@/components/Link";
-import { MySession, authOptions } from "../api/auth/[...nextauth]";
-import { getOrdersByUserId } from "@/server/orders";
+import { MySession } from "../api/auth/[...nextauth]";
 import { OrderHistory } from "@/interfaces";
 
 const columns: GridColDef[] = [
